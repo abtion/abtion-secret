@@ -1,10 +1,10 @@
-# Project Name Human
+# Abtion Secret
 
 ![Observatory](https://img.shields.io/mozilla-observatory/grade-score/muffi-template.herokuapp.com)
 
 This project is built on top of [Muffi](https://github.com/abtion/muffi).
 
-1. [Project Name Human](#Project-Name-Human)
+1. [Abtion Secret](#Abtion-Secret)
 2. [Requirements](#requirements)
 3. [Developing](#developing)
    - [First time setup](#first-time-setup)
@@ -183,15 +183,15 @@ These can be set via the `SIDEKIQ_USERNAME` and `SIDEKIQ_PASSWORD` config-vars o
 
 The project is hosted by [heroku](https://heroku.com).
 
-Current dyno types and add-on plans can be found in the project's [heroku dashboard](https://dashboard.heroku.com/apps/project-name-param-production). To access the dashboard, a heroku user with access to the abtion team is required.
+Current dyno types and add-on plans can be found in the project's [heroku dashboard](https://dashboard.heroku.com/apps/abtion-secret-production). To access the dashboard, a heroku user with access to the abtion team is required.
 
 ## Deployments
 
 Review apps and CI are enable for PR's. Auto merge setup to staging environment on merging of branches into `main`.
 
 Remote (App)
-Staging https://git.heroku.com/project-name-param-staging-eu.git (https://project-name-param-staging-eu.herokuapp.com/)
-Production https://git.heroku.com/project-name-param-production.git (https://project-name-param-production.herokuapp.com/)
+Staging https://git.heroku.com/abtion-secret-staging-eu.git (https://abtion-secret-staging-eu.herokuapp.com/)
+Production https://git.heroku.com/abtion-secret-production.git (https://abtion-secret-production.herokuapp.com/)
 
 # Staging
 

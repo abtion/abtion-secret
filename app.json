@@ -1,22 +1,5 @@
 {
-  "environments": {
-    "review":{
-      "env": {
-        "HTTP_AUTH_PASSWORD": {
-          "required": true
-        },
-        "HTTP_AUTH_USERNAME": {
-          "required": true
-        }
-      }
-    }
-  },
   "addons": [
-    "rollbar:free",
-    {
-      "plan": "heroku-postgresql",
-      "options": { "version": "12" }
-    },
     "heroku-redis:hobby-dev"
   ],
   "buildpacks": [],
@@ -32,14 +15,7 @@
     }
   },
   "formation": {},
-  "name": "project-name-param",
+  "name": "abtion-secret",
   "scripts": {},
   "stack": "heroku-18",
-  "environments": {
-    "review": {
-      "scripts": {
-        "postdeploy": "bundle exec rails db:seed"
-      }
-    }
-  }
 }
