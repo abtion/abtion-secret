@@ -10,7 +10,76 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  */
+@import "fonts";
+@import "secrets-new";
+@import "secrets-show";
+
+:root {
+  --primary: #36244d;
+  --secondary: #dcbcfd;
+  --secondary-rgb: 220, 188, 253;
+  --light-red: #fcf4f0;
+  --light-green: #e0f9f0;
+  --light-yellow: #fcfaf0;
+  --dark-red: #f2d7ca;
+  --dark-green: #cbebdb;
+}
+
+html {
+  background-color: var(--light-yellow);
+  color: var(--primary);
+  font-size: 16px;
+  font-family: "Hansen Grotesque", arial, sans-serif;
+}
 
 body {
-  margin: 10em;
+  margin: 0;
+  height: 100%;
+  &.modal-shown {
+    overflow: hidden;
+  }
+}
+
+.container {
+  width: 800px;
+  max-width: calc(100% - 20px);
+  margin: 5em auto;
+}
+
+.secret__container {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 1em;
+  width: 100%;
+  padding: 2em;
+  background-color: rgba(var(--secondary-rgb), 0.25);
+}
+
+textarea,
+input {
+  display: block;
+  width: 100%;
+  background-color: transparent;
+  padding: 0;
+  resize: none;
+  color: inherit;
+  border: none;
+  font-size: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+button {
+  margin-top: 1em;
+  font: inherit;
+  position: relative;
+  background: rgba(var(--secondary-rgb), 0.75);
+  border: none;
+  border-radius: 1em;
+  color: var(--primary);
+  padding: 1em 2em;
+  text-decoration: none;
+  width: fit-content;
 }

@@ -1,14 +1,21 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
 import * as openpgp from "openpgp"
+import autoresize from "../utils/autosize"
 
 const form = document.querySelector("form")
+const secretInput = form.querySelector(".secret__input")
+const linkModal = document.querySelector(".link-modal")
+const urlInput = linkModal.querySelector(".link-modal__url")
+const copyButton = document.querySelector(".link-modal__copy")
+const passwordLength = 16
+
+autoresize(secretInput, 300)
 
 const generatePassword = () => {
-  const length = 32
   const hex = "0123456789abcdef"
   let output = ""
-  for (let i = 0; i < length; ++i) {
+  for (let i = 0; i < passwordLength; ++i) {
     output += hex.charAt(Math.floor(Math.random() * hex.length))
   }
   return output
@@ -29,7 +36,7 @@ const encryptSecret = async (secret, password) => {
 const handleFormSubmit = async (event) => {
   event.preventDefault()
 
-  const secret = form.querySelector('[name="secret"]').value
+  const secret = secretInput.value
   const csrfToken = document.querySelector("[name=csrf-token]").content
 
   const password = generatePassword()
@@ -51,12 +58,17 @@ const handleFormSubmit = async (event) => {
   })
 
   const key = await response.json()
+  showUrl(`${location.origin}/${key}#${password}`)
+}
 
-  const urlElement = document.querySelector(".link__url")
-  urlElement.value = `${location.host}/${key}#${password}`
+const showUrl = (url) => {
+  document.body.classList.add("modal-shown")
 
-  const linkElement = document.querySelector(".link")
-  linkElement.classList.toggle("link--hidden", false)
+  urlInput.value = url
+  linkModal.classList.toggle("link-modal--hidden", false)
 }
 
 form.addEventListener("submit", handleFormSubmit)
+copyButton.addEventListener("click", () => {
+  navigator.clipboard.writeText(urlInput.value)
+})

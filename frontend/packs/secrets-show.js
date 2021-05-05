@@ -1,9 +1,12 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
 import * as openpgp from "openpgp"
+import autoresize from "../utils/autosize"
+
+const textarea = document.querySelector("textarea")
+const copyButton = document.querySelector(".secret__copy")
 
 const decrypt = async () => {
-  const textarea = document.querySelector("textarea")
   const key = textarea.getAttribute("data-key")
   const password = location.hash.substr(1)
 
@@ -24,4 +27,19 @@ const decrypt = async () => {
   textarea.value = result.data
 }
 
-decrypt()
+const init = async () => {
+  try {
+    await decrypt()
+    document.body.classList.add("secrets-show--success")
+
+    copyButton.addEventListener("click", () => {
+      navigator.clipboard.writeText(textarea.value)
+    })
+
+    autoresize(textarea)
+  } catch (_error) {
+    document.body.classList.add("secrets-show--failure")
+  }
+}
+
+init()
