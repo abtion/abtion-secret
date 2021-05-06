@@ -1,166 +1,208 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/d0e13853fa82d32e650a/maintainability)](https://codeclimate.com/repos/5dcbb7cd09f28e014c00f396/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d0e13853fa82d32e650a/test_coverage)](https://codeclimate.com/repos/5dcbb7cd09f28e014c00f396/test_coverage)
+# Abtion Secret
 
-# Muffi
+![Observatory](https://img.shields.io/mozilla-observatory/grade-score/muffi-template.herokuapp.com)
 
-1. [Muffi](#muffi)
-   1. [What is Muffi?](#what-is-muffi)
-   2. [What are the benefits of using Muffi?](#what-are-the-benefits-of-using-muffi)
-   3. [Key features](#key-features)
-   4. [Getting Started](#getting-started)
-      1. [Start a new project](#start-a-new-project)
-      2. [Configure the project](#configure-the-project)
-      3. [Configure Code Climate](#configure-code-climate)
-      4. [Configure CD](#configure-cd)
-      5. [Configure i18n tasks](#configure-i18n-tasks)
-      6. [Setup mailing](#setup-mailing)
-      7. [Setup basic auth](#setup-basic-auth)
-      8. [Capybara drivers](#capybara-drivers)
-      9. [Capybara Screenshots in CI](#capybara-screenshots-in-ci)
-      10. [Set up Dependabot](#set-up-dependabot)
-   5. [Contributing](#contributing)
-   6. [License](#license)
-   7. [About Abtion](#about-abtion)
+This project is built on top of [Muffi](https://github.com/abtion/muffi).
 
-## What is Muffi?
+1. [Abtion Secret](#Abtion-Secret)
+2. [Requirements](#requirements)
+3. [Developing](#developing)
+   - [First time setup](#first-time-setup)
+      - [1. Configuration](#1-configuration)
+         - [Database connection](#database-connection)
+      - [2. Dependencies and database setup](#2-dependencies-and-database-setup)
+         - [Chrome driver](#chrome-driver)
+      - [3. Ensure that linting and tests pass](#3-ensure-that-linting-and-tests-pass)
+      - [4. Git hooks](#4-git-hooks)
+   - [Day-to-day](#day-to-day)
+   - [Debugging](#debugging)
+   - [Download production or staging DB](#download-production-or-staging-db)
+4. [Notable inclusions and Notable exclusions](#notable-inclusions-and-notable-exclusions)
+   1. [Devise User Authorization](#devise-user-authorization)
+5. [Production](#production)
+   1. [Deployments](#deployments)
+6. [Staging](#staging)
+7. [Third party services](#third-party-services)
+   1. [Name of the third party](#name-of-the-third-party)
 
-Muffi is a project template maintained by [Abtion](https://abtion.com/) and used to kick start
-Ruby on Rails applications.
+Description of the project. What is it solving? Who are the users?
 
-## What are the benefits of using Muffi?
+This section should include any business related explanation that helps understand the context of the project. It could be an excellent idea to include a dictionary of terms, a color legend or a user roles explanation.
 
-* Much less time spent on "first-time setup":
-   * Projects starting from the Muffi template include all the libraries we typically use at Abtion on the latest version.
-   * Basic functionality is there from the start; we can have the app live from the moment we start, start sending emails, or log in with a user to the system.
-* Lots of decisions are already made:
-   * We've made these same decisions many times - now we know which decisions are the right ones.
-* Fully functional test setup.
-   * Tests are not an afterthought. They are an integrated part of the development flow.
-   * Reliable software from day one.
-* Easy for developers to switch between similar projects.
-   * Easy to scale projects up and down. Developers know what to expect when they join the project. They've seen similar things before.
-   * Less reliance on specific people - the whole team can contribute even when a team member is not present.
+- URL to the project
+- Asana:
+- URL to Abtion's own related git repositories (frontend / backend / admin area / microservices)
+- Harvest:
+- CI:
+- Client name, and if possible, contact details.
+- IT person contact details
 
-## Key features
+Name, and a short description of any services that the project is using (error tracking, activity monitoring, log registry, email service, etc). Include where to get the credentials. E.g., 1Password under admin+project@abtion.com.
 
-* Heroku ready - Review apps, staging and production
-* Uses [devise](https://github.com/plataformatec/devise)
-* Uses [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions)
-* Uses [Jest](https://github.com/facebook/jest)
-* Uses [rspec](https://github.com/rspec/rspec-rails)
-* Uses [rubocop](https://github.com/bbatsov/rubocop)
-* Uses [simplecov](https://github.com/colszowka/simplecov)
-* Uses [i18n-tasks](https://github.com/glebm/i18n-tasks)
+# Requirements
 
-## Getting Started
+You must have the following installed and available on your machine:
 
-### Start a new project
+- **Ruby 2.7.x**
+- **Node JS 12.x**
+- **Yarn 1.x**
+- **PostgreSQL 12**
+- **Redis**
 
-To start a new project with Muffi, simply create a new repository on GitHub
-using this repository as a template.
+# Developing
 
-Alternatively, clone this repository and change the git remote to point to
-your own repository.
+## First time setup
 
-### Configure the project
+### 1. Configuration
 
-1. Edit `application.rb` and change the module name and configuration settings.
-2. Edit the database names in `database.yml`
-3. Use script for replacing `ProjectNamePascal` e.g. in all files:
-   - `bin/replace-project-names` (uses the folder name)
-   - Or `bin/replace-project-names <param-case-name>`
-4. `mv README.example.md README.md`
+We use [dotenv](https://github.com/bkeepers/dotenv) for configuring env vars.
 
-### Configure Code Climate
+The following files are checked into git:
 
-1. Login to CodeClimate and add your project
-2. Go to the `Repo Settings` -> `Test coverage`
-3. Enable `Enforce Diff Coverage` with a threshold of 100%
-4. Copy the `TEST REPORTER ID`
-5. Visit `https://github.com/abtion/<Project name>/settings/secrets`
-6. Add a new secret: `CC_TEST_REPORTER_ID` with the copied value from codeclimate
+- `.env` - configuration common across all environments
+- `.env.development` - configuration specific to the development environment
+- `.env.test` - configuration specific to the test environment
 
-### Configure CD
+If you need to make local changes to the env files, create a `.env.ENVIRONMENT.local` file (where ENVIRONMENT is test or development).
 
-1. Log in to the [Heroku dashboard](https://dashboard.heroku.com)
-2. Create a Pipeline, and two new applications
-    - Staging: `<PROJECT-NAME>-staging`
-    - Production: `<PROJECT-NAME>-production`
-3. Turn on "Review Apps" from the Pipeline's page
-4. Set Heroku config vars:
-   - `MAIL_FROM` (review, staging and production).
-   - `DOMAIN_NAME` (ONLY staging and production)
-   - `SEED_ADMIN_EMAIL` (review)
-   - `SEED_ADMIN_INITIAL_PASSWORD` (review)
+Any env var you specify in such a file will override the configuration for the corresponding environment.
 
-### Configure i18n tasks
+#### Database connection
 
-If you need to ignore specific translation keys, follow this process:
+You can set `DATABASE_URL` in `.env.local`, if you for instance use Docker for Postgres: `DATABASE_URL="postgresql://localhost:5432"`
+Or if you just use a local postgres instance:
+`DATABASE_URL=postgresql://user:pass@localhost:5432`
 
-1. Open `config/i18n-tasks.yml`.
-2. Go to `ignore_unused` or `ignore_missing` depending on whether you need to
-   ignore unused translations, e.g., if a gem adds new translation keys, or
-   missing translations.
-3. Add your key(s) to the section in the YAML file.
-4. See the configuration file for examples on more advanced usages.
+### 2. Dependencies and database setup
 
-### Setup mailing
+Run: `bin/setup`
 
-1. Go to the production app in the Heroku dashboard.
-2. Add Sendgrid addon.
-3. Click the added Sendgrid resource, go through the confirmation steps.
-4. Set up DKIM on the client's domain (under sender authentication -> domain authentication).
-5. Go to staging and repeat the above steps.
-6. If you want the review apps to send emails: Copy the staging app's Sendgrid credentials and add them to the review apps config vars. Do not add the Sendgrid addon to review apps in `app.json` (Sendgrid will ban our account).
+#### Chrome driver
 
-### Setup basic auth
+Download the correct version of chromedriver.\*
 
-For added security we want to add basic auth to our review/staging environments.
+```sh
+$ bundle exec rails webdrivers:chromedriver:update
+```
 
-1. Go to the Review/Staging app in the Heroku dashboard.
-2. Add environment variables for:
-  1. `HTTP_AUTH_USERNAME`
-  2. `HTTP_AUTH_PASSWORD`
+\*_It will try to do this automatically when running the tests, but if you disable network with webmock/vcr your tests will fail when it does._
 
-### Capybara drivers
+If you need to, you can disable the Chrome driver by setting
+`DISABLE_WEBDRIVERS` to `true` in `.env.test` or running
+`DISABLE_WEBDRIVERS=true bundle exec rspec` if you only need to do it
+occasionally.
 
-This project registers two Capybara drivers.
+### 3. Ensure that linting and tests pass
 
-Set the environment variable `CAPYBARA_DRIVER` to `headless_chrome` (default) to run specs without
-opening Chrome, or use `chrome` to open the browser automatically.
+Run:
 
-### Capybara Screenshots in CI
+```sh
+bundle exec rspec
+bundle exec rubocop
+bundle exec brakeman --quiet --no-summary
+bundle exec erblint --lint-all
+bundle exec bundle-audit update
+bundle exec bundle-audit
+yarn lint
+```
 
-When a spec using Capybara fails in CI a screenshot will be saved under Github Actions Artifacts. If need be you can download the `capybara.zip` file and extract it to get to the screenshots.
+Or instead, you can run `rails test_all_strict`
 
-### Set up Dependabot
+### 4. Git hooks
 
-To allow Dependabot to auto-merge security updates, you need to add a secret
-token to the settings of your project on GitHub. Follow these steps:
+Run: `bin/install-hooks`
 
-1. Go to "Settings" > "Secrets".
-2. Click "New secret".
-3. Set the name to `DEPENDABOT_TOKEN` and insert a secret key (must be maximum
-   64 kb).
-4. Click "Add secret".
+This way you are getting all our git hooks for both pushing and committing.
+If for some reason you don't want one of the hooks (push/commit) you can specify it by with `--no-commit` and `--no-push`.
 
-## Contributing
+The hooks are symlinked meaning all the changes to the repo hooks will automatically be updated in all local environments, in the case of a change.
 
-Muffi is maintained by [_Abtioneers_](#about-abtion), but open for anyone to suggest improvements and bugfixes.
+## Day-to-day
 
-One abtioneer is currently responsible for the project at Abtion, with support from other employees.
+- Run the server: `heroku local` and [http://localhost:5000](http://localhost:5000)
+- Run tests: `bundle exec rspec`
+- Run rubocop: `bundle exec rubocop`
+- Run prettier: `bin/prettier`
 
-Please see [CONTRIBUTING.md](https://github.com/abtion/muffi/blob/main/CONTRIBUTING.md).
+## Debugging
 
-## License
+- Call `byebug` anywhere in the code to stop execution and get a debugger console.
+- Access an IRB console on exception pages or by using `<%= console %>` anywhere in the code.
+- (Of course, [RubyMine](https://www.jetbrains.com/ruby/) includes a great [visual debugger](https://www.jetbrains.com/ruby/features/ruby_debugger.html)).
 
-[MIT](https://opensource.org/licenses/MIT)
+## Download production or staging DB
 
-## About Abtion
+First of all, **don't download production data** unless absolutely necessary.
+It contains personal data, and the environment you download it to must be as secure as the production environment.
+Additionally, you must ensure that the data is deleted afterwards.
 
-[![Abtion](abtion.png "Abtion")](https://abtion.com/)
+If for some reason you need to download production data anyway, you can use [parity](https://github.com/thoughtbot/parity).
 
-[Abtion](https://abtion.com/) is a technology company building software and
-services that make life better, easier and more fun. Zeros and ones are the
-backbone of our work, and together with a diverse mix of designers, developers
-and strategists, we create websites, mobile- and web applications with a purpose.
+# Notable inclusions and Notable exclusions
+
+Inclusions:
+
+- [Devise](#devise-user-authorization)
+- Webpacker
+- Jest
+- PostgreSQL database (11.x)
+- [Rollbar](https://rollbar.com) error monitoring
+- Prettier for linting javascript files
+- RSpec runner
+  - FactoryBot
+  - Capybara for acceptance testing
+- Rubocop for linting ruby files
+- CSP header is configured, so if you need to use remotely hosted javascript, you must whitelist it in `config/initializers/content_security_policy.rb`
+- Sidekiq for running jobs
+
+Exclusions:
+
+- Spring
+- Turbolinks
+
+## Devise User Authorization
+
+There's a single `user` model with two user levels: **user** and **admin**.
+
+A boolean `admin` attribute determines which of the two levels a user belongs to.
+
+By default, only admins are authorized to call a controller action.
+
+## Sidekiq
+
+This project is using `Sidekiq` to run background jobs. `Sidekiq` provides a web-interface which gives a nice overview.
+Default credentials for staging are:
+```
+user: abtion
+pass: password
+```
+
+These can be set via the `SIDEKIQ_USERNAME` and `SIDEKIQ_PASSWORD` config-vars on heroku.
+
+# Production
+
+The project is hosted by [heroku](https://heroku.com).
+
+Current dyno types and add-on plans can be found in the project's [heroku dashboard](https://dashboard.heroku.com/apps/abtion-secret-production). To access the dashboard, a heroku user with access to the abtion team is required.
+
+## Deployments
+
+Review apps and CI are enable for PR's. Auto merge setup to staging environment on merging of branches into `main`.
+
+Remote (App)
+Staging https://git.heroku.com/abtion-secret-staging-eu.git (https://abtion-secret-staging-eu.herokuapp.com/)
+Production https://git.heroku.com/abtion-secret-production.git (https://abtion-secret-production.herokuapp.com/)
+
+# Staging
+
+Any differences that could have with production, e.g. how are emails delivered.
+
+# Third party services
+
+## Name of the third party
+
+- **Description:**
+- **Auth:** Where can it be found. E.g. .env file
+- **Documentation:**
+- **Web interface:**
+- **IT Contact person:**
