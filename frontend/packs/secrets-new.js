@@ -42,8 +42,6 @@ const handleFormSubmit = async (event) => {
   const password = generatePassword()
   const secretBlob = await encryptSecret(secret, password)
 
-  console.log(secretBlob)
-
   const formData = new FormData()
   formData.append("secret", secretBlob)
 
@@ -52,7 +50,6 @@ const handleFormSubmit = async (event) => {
     headers: {
       "X-Api-Version": "v1",
       "X-CSRF-Token": csrfToken,
-      // "Content-Type": "multipart",
     },
     body: formData,
   })
