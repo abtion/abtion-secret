@@ -16,7 +16,6 @@ AllCops:
     - "node_modules/**/*"
     - "tmp/**/*"
     - "vendor/**/*"
-    - "db/schema.rb"
 
 Bundler/DuplicatedGem:
   Enabled: true
@@ -41,24 +40,17 @@ Metrics/AbcSize:
   Max: 15
   Exclude:
     - "spec/**/*"
-    - "db/migrate/*.rb"
 
 Metrics/BlockLength:
   Max: 25
   Exclude:
     - "spec/**/*_spec.rb"
     - "spec/factories/*.rb"
-    - "db/migrate/*.rb"
     - "config/environments/*.rb"
     - "config/routes.rb"
 
 Metrics/ClassLength:
   Max: 100
-
-Metrics/MethodLength:
-  Max: 10
-  Exclude:
-    - "db/migrate/**/*.rb"
 
 Rails/FilePath:
   EnforcedStyle: arguments
@@ -70,27 +62,27 @@ Style/Documentation:
   Enabled: false
 
 Style/MethodCallWithArgsParentheses:
-  IgnoredMethods: [
-    "to",
-    "to_not",
-    "require",
-    "require_relative",
-    "describe",
-    "it",
-    "context",
-    "exit",
-    "validate_presence_of",
-    "belong_to",
-    "have_many",
-    "raise",
-    "puts",
-    "desc",
-    "redirect_to",
-    "render"
-  ]
+  IgnoredMethods:
+    [
+      "to",
+      "to_not",
+      "require",
+      "require_relative",
+      "describe",
+      "it",
+      "context",
+      "exit",
+      "validate_presence_of",
+      "belong_to",
+      "have_many",
+      "raise",
+      "puts",
+      "desc",
+      "redirect_to",
+      "render",
+    ]
   Enabled: true
   Exclude:
-    - "db/migrate/*.rb"
     - "Gemfile"
 
 Style/StringLiterals:

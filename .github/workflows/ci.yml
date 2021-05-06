@@ -70,28 +70,6 @@ jobs:
           bundler-cache: true
       - name: bundle-audit
         run: bundle exec bundle-audit update && bundle exec bundle-audit
-  erb-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: erb-lint
-        run: bundle exec erblint --lint-all
-  i18n-tasks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: i18n-tasks
-        run: bundle exec i18n-tasks check-normalized
   jest:
     runs-on: ubuntu-latest
     steps:
@@ -116,58 +94,11 @@ jobs:
         uses: actions/checkout@v2
       - name: prettier
         run: bin/prettier --check
-  schema:
-    runs-on: ubuntu-latest
-
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432
-      RAILS_ENV: test
-
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 5
-
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: bundle install
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: run migrations
-        run: |
-          bundle exec rake db:create
-          bundle exec rake db:migrate
-      - name: check git diff
-        run: git diff --exit-code db/schema.rb
   rspec:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432
       RAILS_ENV: test
-
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 5
 
     steps:
       - name: checkout repository
@@ -176,8 +107,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: install required apt packages
-        run: sudo apt-get -y install libpq-dev
       - name: get yarn cache directory path
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -192,10 +121,6 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: yarn
         run: yarn --frozen-lockfile
-      - name: setup database
-        run: |
-          bundle exec rake db:create
-          bundle exec rake db:schema:load
       - name: run bin/webpack
         run: bin/webpack
       - name: rspec
