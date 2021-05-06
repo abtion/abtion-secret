@@ -8,10 +8,32 @@ RSpec.describe "Secrets", type: :feature do
 
     fill_in "secret", with: "this is a secret"
 
-    click_button "Create secret"
+    click_button "Create link"
 
     expect(page).to(
-      have_text("Here's the link to your secret. Remember, it can only be opened once!")
+      have_text("Link generated")
     )
+
+    secret_url = page.find(class: "modal__url").value
+
+    visit secret_url
+
+    expect(page).to have_text("Loading your secret...")
+    expect(page).not_to have_field(name: "secret")
+
+    expect(page).to have_text("Here is your secret")
+    expect(page).to have_field(name: "secret", with: "this is a secret")
+  end
+
+  context "when there's no such secret" do
+    it "shows a failure message" do
+      visit "not-a-key#not-a-password"
+
+      expect(page).to have_text("Loading your secret...")
+      expect(page).not_to have_field(name: "secret")
+
+      expect(page).to have_text("Your secret is gone...")
+      expect(page).to have_button("Share a secret")
+    end
   end
 end

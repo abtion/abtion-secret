@@ -11,6 +11,10 @@ Dotenv.load(
 require "code_coverage_helper"
 
 RSpec.configure do |config|
+  config.before do
+    Rails.cache.clear
+  end
+
   config.expect_with(:rspec) do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

@@ -37,7 +37,7 @@ const handleFormSubmit = async (event) => {
   event.preventDefault()
 
   const secret = secretInput.value
-  const csrfToken = document.querySelector("[name=csrf-token]").content
+  const csrfToken = document.querySelector("[name=csrf-token]")?.content
 
   const password = generatePassword()
   const secretBlob = await encryptSecret(secret, password)

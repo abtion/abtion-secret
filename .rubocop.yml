@@ -65,7 +65,7 @@ Style/MethodCallWithArgsParentheses:
   IgnoredMethods:
     [
       "to",
-      "to_not",
+      "not_to",
       "require",
       "require_relative",
       "describe",
