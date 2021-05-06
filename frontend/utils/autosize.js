@@ -6,5 +6,6 @@ export default function autoresize(element, minHeight = 0) {
   }
 
   element.addEventListener("input", resize)
+  window.addEventListener("resize", resize)
   resize()
 }

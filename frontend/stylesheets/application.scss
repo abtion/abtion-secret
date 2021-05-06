@@ -35,9 +35,6 @@ html {
 body {
   margin: 0;
   height: 100%;
-  &.modal-shown {
-    overflow: hidden;
-  }
 }
 
 .container {
@@ -75,11 +72,32 @@ button {
   margin-top: 1em;
   font: inherit;
   position: relative;
-  background: rgba(var(--secondary-rgb), 0.75);
   border: none;
   border-radius: 1em;
   color: var(--primary);
   padding: 1em 2em;
   text-decoration: none;
+  background: none;
   width: fit-content;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &.button--primary {
+    background: rgba(var(--secondary-rgb), 0.75);
+    text-decoration: none;
+
+    &:hover {
+      box-shadow: 0.1rem 0.1rem var(--secondary);
+    }
+
+    &:active {
+      box-shadow: none;
+      transform: translate(0.1rem, 0.1rem);
+    }
+  }
+}
+
+.float-right {
+  margin-left: 1em;
+  float: right;
 }

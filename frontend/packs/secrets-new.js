@@ -5,9 +5,9 @@ import autoresize from "../utils/autosize"
 
 const form = document.querySelector("form")
 const secretInput = form.querySelector(".secret__input")
-const linkModal = document.querySelector(".link-modal")
-const urlInput = linkModal.querySelector(".link-modal__url")
-const copyButton = document.querySelector(".link-modal__copy")
+const urlInput = document.querySelector(".modal__url")
+const copyButton = document.querySelector(".modal__copy")
+const backButton = document.querySelector(".modal__back")
 const passwordLength = parseInt(process.env.PASSWORD_LENGTH)
 
 autoresize(secretInput, 300)
@@ -59,13 +59,14 @@ const handleFormSubmit = async (event) => {
 }
 
 const showUrl = (url) => {
-  document.body.classList.add("modal-shown")
-
   urlInput.value = url
-  linkModal.classList.toggle("link-modal--hidden", false)
+  document.body.classList.add("secrets-new--link")
 }
 
 form.addEventListener("submit", handleFormSubmit)
 copyButton.addEventListener("click", () => {
   navigator.clipboard.writeText(urlInput.value)
+})
+backButton.addEventListener("click", () => {
+  document.body.classList.remove("secrets-new--link")
 })

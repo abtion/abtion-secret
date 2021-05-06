@@ -5,6 +5,7 @@ import autoresize from "../utils/autosize"
 
 const textarea = document.querySelector("textarea")
 const copyButton = document.querySelector(".secret__copy")
+const backLink = document.querySelector(".secret__back-link")
 
 const decrypt = async () => {
   const key = textarea.getAttribute("data-key")
@@ -34,6 +35,14 @@ const init = async () => {
 
     copyButton.addEventListener("click", () => {
       navigator.clipboard.writeText(textarea.value)
+    })
+
+    backLink.addEventListener("click", (event) => {
+      const shouldNavigate = confirm(
+        "If you haven't copied your secret yet, you will loose it.\n\nContinue?"
+      )
+
+      if (!shouldNavigate) event.preventDefault()
     })
 
     autoresize(textarea)
