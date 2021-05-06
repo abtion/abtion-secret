@@ -8,12 +8,12 @@ const secretInput = form.querySelector(".secret__input")
 const linkModal = document.querySelector(".link-modal")
 const urlInput = linkModal.querySelector(".link-modal__url")
 const copyButton = document.querySelector(".link-modal__copy")
-const passwordLength = 16
+const passwordLength = parseInt(process.env.PASSWORD_LENGTH)
 
 autoresize(secretInput, 300)
 
 const generatePassword = () => {
-  const hex = "0123456789abcdef"
+  const hex = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
   let output = ""
   for (let i = 0; i < passwordLength; ++i) {
     output += hex.charAt(Math.floor(Math.random() * hex.length))
