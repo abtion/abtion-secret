@@ -17,5 +17,5 @@
   "formation": {},
   "name": "abtion-secret",
   "scripts": {},
-  "stack": "heroku-18",
+  "stack": "heroku-18"
 }
