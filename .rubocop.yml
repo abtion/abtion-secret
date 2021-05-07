@@ -126,3 +126,6 @@ RSpec/MessageChain:
 
 RSpec/InstanceVariable:
   AssignmentOnly: false
+
+Rails/EnvironmentVariableAccess:
+  Enabled: false
