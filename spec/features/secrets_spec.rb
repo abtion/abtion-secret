@@ -14,7 +14,7 @@ RSpec.describe "Secrets", type: :feature do
       have_text("Link generated")
     )
 
-    secret_url = page.find(class: "modal__url").value
+    secret_url = page.find("input[readOnly]").value
 
     visit secret_url
 
@@ -23,6 +23,25 @@ RSpec.describe "Secrets", type: :feature do
 
     expect(page).to have_text("Here is your secret")
     expect(page).to have_field(name: "secret", with: "this is a secret")
+  end
+
+  context "when visiting a secret twice" do
+    it "only shows the secret the first time" do
+      visit root_path
+
+      fill_in "secret", with: "this is a secret"
+
+      click_button "Create link"
+      secret_url = page.find("input[readOnly]").value
+
+      visit secret_url
+
+      expect(page).to have_text("Here is your secret")
+
+      visit secret_url
+
+      expect(page).to have_text("Your secret is gone...")
+    end
   end
 
   context "when there's no such secret" do
