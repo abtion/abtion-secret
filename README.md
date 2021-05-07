@@ -1,6 +1,6 @@
-# Abtion Secret
+# Abtion Secret ([secret.abtion.com](https://secret.abtion.com))
 
-![Observatory](https://img.shields.io/mozilla-observatory/grade-score/muffi-template.herokuapp.com)
+![Observatory](https://img.shields.io/mozilla-observatory/grade-score/secret.abtion.com)
 
 This project is built on top of [Muffi](https://github.com/abtion/muffi).
 
@@ -8,36 +8,37 @@ This project is built on top of [Muffi](https://github.com/abtion/muffi).
 2. [Requirements](#requirements)
 3. [Developing](#developing)
    - [First time setup](#first-time-setup)
-      - [1. Configuration](#1-configuration)
-         - [Database connection](#database-connection)
-      - [2. Dependencies and database setup](#2-dependencies-and-database-setup)
-         - [Chrome driver](#chrome-driver)
-      - [3. Ensure that linting and tests pass](#3-ensure-that-linting-and-tests-pass)
-      - [4. Git hooks](#4-git-hooks)
+     - [1. Configuration](#1-configuration)
+     - [2. Dependencies](#2-dependencies)
+       - [Chrome driver](#chrome-driver)
+     - [3. Ensure that linting and tests pass](#3-ensure-that-linting-and-tests-pass)
+     - [4. Git hooks](#4-git-hooks)
    - [Day-to-day](#day-to-day)
    - [Debugging](#debugging)
-   - [Download production or staging DB](#download-production-or-staging-db)
 4. [Notable inclusions and Notable exclusions](#notable-inclusions-and-notable-exclusions)
-   1. [Devise User Authorization](#devise-user-authorization)
 5. [Production](#production)
-   1. [Deployments](#deployments)
-6. [Staging](#staging)
-7. [Third party services](#third-party-services)
-   1. [Name of the third party](#name-of-the-third-party)
 
-Description of the project. What is it solving? Who are the users?
+abtion-secret is a self-hosted service that makes it possible to safely share secrets (text strings) through links.
 
-This section should include any business related explanation that helps understand the context of the project. It could be an excellent idea to include a dictionary of terms, a color legend or a user roles explanation.
+URL: https://secret.abtion.com
 
-- URL to the project
-- Asana:
-- URL to Abtion's own related git repositories (frontend / backend / admin area / microservices)
-- Harvest:
-- CI:
-- Client name, and if possible, contact details.
-- IT person contact details
+Asana: https://app.asana.com/0/1200290320241129/board
 
-Name, and a short description of any services that the project is using (error tracking, activity monitoring, log registry, email service, etc). Include where to get the credentials. E.g., 1Password under admin+project@abtion.com.
+The technical implementation works like this:
+
+1. Creating the **link**:
+   1. Browser creates a **password**
+   2. Browser encrypts the **secret** with the **password**, then sends it to the backend
+   3. Backend generates a **key**
+   4. Backend stores the **encrypted secret** under the **key**, with an expiry time set
+   5. Backend sends back the **key**.
+   6. Browser creates a **link**: origin/**key**#**password**
+2. Opening the **link**
+   1. Browser calls the backend to fetch the **encrypted secret** (using the **key**)
+   2. Backend deletes the **encrypted secret** from the store and sends it back
+   3. Browser decrypts the **encrypted secret** with the **password**
+
+Since the password is in the hash-part of the URL it is never sent to the server
 
 # Requirements
 
@@ -46,7 +47,6 @@ You must have the following installed and available on your machine:
 - **Ruby 2.7.x**
 - **Node JS 12.x**
 - **Yarn 1.x**
-- **PostgreSQL 12**
 - **Redis**
 
 # Developing
@@ -67,13 +67,7 @@ If you need to make local changes to the env files, create a `.env.ENVIRONMENT.l
 
 Any env var you specify in such a file will override the configuration for the corresponding environment.
 
-#### Database connection
-
-You can set `DATABASE_URL` in `.env.local`, if you for instance use Docker for Postgres: `DATABASE_URL="postgresql://localhost:5432"`
-Or if you just use a local postgres instance:
-`DATABASE_URL=postgresql://user:pass@localhost:5432`
-
-### 2. Dependencies and database setup
+### 2. Dependencies
 
 Run: `bin/setup`
 
@@ -119,9 +113,9 @@ The hooks are symlinked meaning all the changes to the repo hooks will automatic
 
 ## Day-to-day
 
-- Run the server: `heroku local` and [http://localhost:5000](http://localhost:5000)
-- Run tests: `bundle exec rspec`
-- Run rubocop: `bundle exec rubocop`
+- Run the server: `bin/rails s` and [http://localhost:3000](http://localhost:3000)
+- Run tests: `bin/rspec`
+- Run rubocop: `bin/rubocop`
 - Run prettier: `bin/prettier`
 
 ## Debugging
@@ -130,14 +124,6 @@ The hooks are symlinked meaning all the changes to the repo hooks will automatic
 - Access an IRB console on exception pages or by using `<%= console %>` anywhere in the code.
 - (Of course, [RubyMine](https://www.jetbrains.com/ruby/) includes a great [visual debugger](https://www.jetbrains.com/ruby/features/ruby_debugger.html)).
 
-## Download production or staging DB
-
-First of all, **don't download production data** unless absolutely necessary.
-It contains personal data, and the environment you download it to must be as secure as the production environment.
-Additionally, you must ensure that the data is deleted afterwards.
-
-If for some reason you need to download production data anyway, you can use [parity](https://github.com/thoughtbot/parity).
-
 # Notable inclusions and Notable exclusions
 
 Inclusions:
@@ -145,64 +131,26 @@ Inclusions:
 - [Devise](#devise-user-authorization)
 - Webpacker
 - Jest
-- PostgreSQL database (11.x)
-- [Rollbar](https://rollbar.com) error monitoring
 - Prettier for linting javascript files
 - RSpec runner
-  - FactoryBot
   - Capybara for acceptance testing
 - Rubocop for linting ruby files
 - CSP header is configured, so if you need to use remotely hosted javascript, you must whitelist it in `config/initializers/content_security_policy.rb`
-- Sidekiq for running jobs
 
 Exclusions:
 
 - Spring
 - Turbolinks
 
-## Devise User Authorization
-
-There's a single `user` model with two user levels: **user** and **admin**.
-
-A boolean `admin` attribute determines which of the two levels a user belongs to.
-
-By default, only admins are authorized to call a controller action.
-
-## Sidekiq
-
-This project is using `Sidekiq` to run background jobs. `Sidekiq` provides a web-interface which gives a nice overview.
-Default credentials for staging are:
-```
-user: abtion
-pass: password
-```
-
-These can be set via the `SIDEKIQ_USERNAME` and `SIDEKIQ_PASSWORD` config-vars on heroku.
-
 # Production
 
 The project is hosted by [heroku](https://heroku.com).
 
-Current dyno types and add-on plans can be found in the project's [heroku dashboard](https://dashboard.heroku.com/apps/abtion-secret-production). To access the dashboard, a heroku user with access to the abtion team is required.
+Current dyno types and add-on plans can be found in the project's [heroku dashboard](https://dashboard.heroku.com/apps/abtion-secret). To access the dashboard, a heroku user with access to the abtion team is required.
 
 ## Deployments
 
-Review apps and CI are enable for PR's. Auto merge setup to staging environment on merging of branches into `main`.
+The `main` branch is automatically deployed to the production env.
 
 Remote (App)
-Staging https://git.heroku.com/abtion-secret-staging-eu.git (https://abtion-secret-staging-eu.herokuapp.com/)
-Production https://git.heroku.com/abtion-secret-production.git (https://abtion-secret-production.herokuapp.com/)
-
-# Staging
-
-Any differences that could have with production, e.g. how are emails delivered.
-
-# Third party services
-
-## Name of the third party
-
-- **Description:**
-- **Auth:** Where can it be found. E.g. .env file
-- **Documentation:**
-- **Web interface:**
-- **IT Contact person:**
+Production https://git.heroku.com/abtion-secret.git (https://abtion-secret.herokuapp.com/)
