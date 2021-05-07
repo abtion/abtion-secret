@@ -1,6 +1,6 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
-import * as openpgp from "openpgp"
+import { createMessage, encrypt } from "openpgp"
 import autoresize from "../utils/autosize"
 
 const form = document.querySelector("form")
@@ -22,9 +22,9 @@ const generatePassword = () => {
 }
 
 const encryptSecret = async (secret, password) => {
-  const message = await openpgp.createMessage({ text: secret })
+  const message = await createMessage({ text: secret })
 
-  const binary = await openpgp.encrypt({
+  const binary = await encrypt({
     message,
     passwords: [password],
     armor: false,

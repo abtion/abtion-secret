@@ -1,13 +1,13 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
-import * as openpgp from "openpgp"
+import { decrypt, readMessage } from "openpgp"
 import autoresize from "../utils/autosize"
 
 const textarea = document.querySelector("textarea")
 const copyButton = document.querySelector(".secret__copy")
 const backLink = document.querySelector(".secret__back-link")
 
-const decrypt = async () => {
+const fetchAndDecrypt = async () => {
   const key = textarea.getAttribute("data-key")
   const password = location.hash.substr(1)
 
@@ -20,8 +20,8 @@ const decrypt = async () => {
 
   const binaryMessage = new Uint8Array(await encryptedSecret.arrayBuffer())
 
-  const result = await openpgp.decrypt({
-    message: await openpgp.readMessage({ binaryMessage }),
+  const result = await decrypt({
+    message: await readMessage({ binaryMessage }),
     passwords: [password],
   })
 
@@ -30,7 +30,7 @@ const decrypt = async () => {
 
 const init = async () => {
   try {
-    await decrypt()
+    await fetchAndDecrypt()
     document.body.classList.add("secrets-show--success")
 
     copyButton.addEventListener("click", () => {
