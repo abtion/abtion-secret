@@ -1,6 +1,6 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
-import { createMessage, encrypt } from "openpgp"
+import { createMessage, encrypt } from "openpgp/lightweight"
 import autoresize from "../utils/autosize"
 
 const form = document.querySelector("form")
