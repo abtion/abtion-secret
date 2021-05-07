@@ -1,0 +1,31 @@
+.Button {
+  margin-top: 1em;
+  font: inherit;
+  position: relative;
+  border: 0;
+  border-radius: 1em;
+  color: var(--primary);
+  padding: 1em 2em;
+  text-decoration: none;
+  background: none;
+  width: fit-content;
+  cursor: pointer;
+
+  &--secondary {
+    text-decoration: underline;
+  }
+
+  &--primary {
+    background: rgba(var(--secondary-rgb), 0.75);
+    text-decoration: none;
+
+    &:hover {
+      box-shadow: 0.1rem 0.1rem var(--secondary);
+    }
+
+    &:active {
+      box-shadow: none;
+      transform: translate(0.1rem, 0.1rem);
+    }
+  }
+}

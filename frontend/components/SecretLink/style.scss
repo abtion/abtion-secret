@@ -1,0 +1,25 @@
+.SecretLink {
+  &__url-container {
+    box-sizing: border-box;
+    position: relative;
+    border-radius: 1em;
+    width: 100%;
+    padding: 1em;
+    background-color: rgba(var(--secondary-rgb), 0.25);
+  }
+
+  &__url {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    padding: 0;
+    resize: none;
+    color: inherit;
+    border: 0;
+    font-size: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

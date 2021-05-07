@@ -11,8 +11,6 @@
  * It is generally better to create a new file per style scope.
  */
 @import "fonts";
-@import "secrets-new";
-@import "secrets-show";
 
 :root {
   --primary: #36244d;
@@ -41,60 +39,6 @@ body {
   width: 800px;
   max-width: calc(100% - 20px);
   margin: 5em auto;
-}
-
-.secret__container {
-  box-sizing: border-box;
-  position: relative;
-  border-radius: 1em;
-  width: 100%;
-  padding: 2em;
-  background-color: rgba(var(--secondary-rgb), 0.25);
-}
-
-textarea,
-input {
-  display: block;
-  width: 100%;
-  background-color: transparent;
-  padding: 0;
-  resize: none;
-  color: inherit;
-  border: 0;
-  font-size: inherit;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-button {
-  margin-top: 1em;
-  font: inherit;
-  position: relative;
-  border: 0;
-  border-radius: 1em;
-  color: var(--primary);
-  padding: 1em 2em;
-  text-decoration: none;
-  background: none;
-  width: fit-content;
-  cursor: pointer;
-  text-decoration: underline;
-
-  &.button--primary {
-    background: rgba(var(--secondary-rgb), 0.75);
-    text-decoration: none;
-
-    &:hover {
-      box-shadow: 0.1rem 0.1rem var(--secondary);
-    }
-
-    &:active {
-      box-shadow: none;
-      transform: translate(0.1rem, 0.1rem);
-    }
-  }
 }
 
 .float-right {
