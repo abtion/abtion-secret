@@ -1,54 +1,7 @@
 // This file is automatically compiled by Webpack, along with any other files
 // present in this directory. You're encouraged to place your actual application logic in
-import { decrypt, readMessage } from "openpgp/lightweight"
-import autoresize from "../utils/autosize"
+import React from "react"
+import ReactDOM from "react-dom"
+import SecretShow from "../pages/SecretShow"
 
-const textarea = document.querySelector("textarea")
-const copyButton = document.querySelector(".secret__copy")
-const backLink = document.querySelector(".secret__back-link")
-
-const fetchAndDecrypt = async () => {
-  const key = textarea.getAttribute("data-key")
-  const password = location.hash.substr(1)
-
-  const response = await fetch(`/api/secrets/${key}`, {
-    method: "GET",
-    headers: { "X-Api-Version": "v1" },
-  })
-
-  const encryptedSecret = await response.blob()
-
-  const binaryMessage = new Uint8Array(await encryptedSecret.arrayBuffer())
-
-  const result = await decrypt({
-    message: await readMessage({ binaryMessage }),
-    passwords: [password],
-  })
-
-  textarea.value = result.data
-}
-
-const init = async () => {
-  try {
-    await fetchAndDecrypt()
-    document.body.classList.add("secrets-show--success")
-
-    copyButton.addEventListener("click", () => {
-      navigator.clipboard.writeText(textarea.value)
-    })
-
-    backLink.addEventListener("click", (event) => {
-      const shouldNavigate = confirm(
-        "If you haven't copied your secret yet, you will loose it.\n\nContinue?"
-      )
-
-      if (!shouldNavigate) event.preventDefault()
-    })
-
-    autoresize(textarea)
-  } catch (_error) {
-    document.body.classList.add("secrets-show--failure")
-  }
-}
-
-init()
+ReactDOM.render(React.createElement(SecretShow), document.querySelector("main"))

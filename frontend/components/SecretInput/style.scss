@@ -1,0 +1,23 @@
+.SecretInput {
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 1em;
+  width: 100%;
+  padding: 2em;
+  background-color: rgba(var(--secondary-rgb), 0.25);
+
+  &__textarea {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    padding: 0;
+    resize: none;
+    color: inherit;
+    border: 0;
+    font-size: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
