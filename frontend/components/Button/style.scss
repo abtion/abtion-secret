@@ -4,28 +4,42 @@
   position: relative;
   border: 0;
   border-radius: 1em;
-  color: var(--primary);
   padding: 1em 2em;
   text-decoration: none;
   background: none;
   width: fit-content;
-  cursor: pointer;
 
-  &--secondary {
-    text-decoration: underline;
+  &:not(:disabled) {
+    cursor: pointer;
+    color: var(--primary);
+
+    &--secondary {
+      text-decoration: underline;
+    }
+  }
+
+  :disabled {
+    color: #6d5e4d;
   }
 
   &--primary {
-    background: rgba(var(--secondary-rgb), 0.75);
     text-decoration: none;
 
-    &:hover {
-      box-shadow: 0.1rem 0.1rem var(--secondary);
+    &:not(:disabled) {
+      background: rgba(var(--secondary-rgb), 0.75);
+
+      &:hover {
+        box-shadow: 0.1rem 0.1rem var(--secondary);
+      }
+
+      &:active {
+        box-shadow: none;
+        transform: translate(0.1rem, 0.1rem);
+      }
     }
 
-    &:active {
-      box-shadow: none;
-      transform: translate(0.1rem, 0.1rem);
+    &:disabled {
+      background: #e2dfcc;
     }
   }
 }

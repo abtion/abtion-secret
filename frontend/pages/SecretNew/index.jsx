@@ -7,6 +7,7 @@ import encryptSecret from "../../utils/encryptSecret"
 import Button from "../../components/Button"
 
 const passwordLength = parseInt(process.env.PASSWORD_LENGTH)
+const maxSecretChars = parseInt(process.env.MAX_SECRET_CHARS)
 
 const FORM_MODE = "FORM_MODE"
 const LINK_MODE = "LINK_MODE"
@@ -51,6 +52,8 @@ export function FormMode({ onSecretStored }) {
     onSecretStored(`${key}#${password}`)
   }
 
+  const secretIsTooLong = secret.length > maxSecretChars
+
   return (
     <>
       <h1>Share your secret</h1>
@@ -65,8 +68,14 @@ export function FormMode({ onSecretStored }) {
           onChange={(event) => setSecret(event.currentTarget.value)}
         />
 
-        <Button variant="primary" className="float-right">
-          Create link
+        <Button
+          variant="primary"
+          className="float-right"
+          disabled={secretIsTooLong}
+        >
+          {secretIsTooLong
+            ? `Secret is too long (${secret.length} / ${maxSecretChars})`
+            : "Create link"}
         </Button>
       </form>
     </>

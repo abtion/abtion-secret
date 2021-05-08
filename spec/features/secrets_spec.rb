@@ -55,4 +55,21 @@ RSpec.describe "Secrets", type: :feature do
       expect(page).to have_button("Share a secret")
     end
   end
+
+  context "when the secret is too long" do
+    it "disables the submit button and instead shows a disclaimer" do
+      visit root_path
+      max_secret_chars = ENV.fetch("MAX_SECRET_CHARS").to_i
+
+      too_long_secret = "a" * (max_secret_chars + 1)
+
+      fill_in "secret", with: too_long_secret
+
+      expect(page).not_to have_button("Create link")
+      expect(page).to(
+        have_button("Secret is too long (#{too_long_secret.size} / #{max_secret_chars})",
+                    disabled: true)
+      )
+    end
+  end
 end
