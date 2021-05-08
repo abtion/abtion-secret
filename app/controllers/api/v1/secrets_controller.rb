@@ -12,9 +12,10 @@ module Api
 
       def show
         ensure_response_time(RESPONSE_TIME) do
-          secret = Rails.cache.read(params[:id])
+          key = params[:id]
+          secret = Rails.cache.read(prefixed_key(key))
 
-          Rails.cache.delete(params[:id]) if secret.present?
+          Rails.cache.delete(prefixed_key(key)) if secret.present?
           send_data(secret)
         end
       end
@@ -27,7 +28,8 @@ module Api
           end
 
           key = unused_key
-          Rails.cache.write(key, params[:secret].read, expires_in: SECRET_LIFETIME_SECONDS)
+          Rails.cache.write(prefixed_key(key),
+                            params[:secret].read, expires_in: SECRET_LIFETIME_SECONDS)
 
           render json: key.to_json
         end
@@ -39,10 +41,14 @@ module Api
         key = nil
         loop do
           key = SecureRandom.urlsafe_base64(KEY_LENGTH)[0...KEY_LENGTH]
-          break unless Rails.cache.exist?(key)
+          break unless Rails.cache.exist?(prefixed_key(key))
         end
 
         key
+      end
+
+      def prefixed_key(key)
+        "secret-#{key}"
       end
 
       def ensure_response_time(seconds)
