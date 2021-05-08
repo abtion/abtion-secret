@@ -1,21 +1,27 @@
 module.exports = {
-  "env": {
+  env: {
     browser: true,
     es2020: true,
     node: true,
   },
-  "extends": "eslint:recommended",
-  "parserOptions": {
+  extends: ["eslint:recommended", "prettier"],
+  parserOptions: {
     sourceType: "module",
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
-  "rules": {
+  plugins: ["react"],
+  rules: {
     // enable additional rules
-    "indent": ["error", 2],
+    indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "double"],
-    "quote-props": ["error", "consistent"],
+    quotes: ["error", "double", { avoidEscape: true }],
 
     // Don't allow console.log
-    "no-console": ["error"]
+    "no-console": ["error"],
+
+    "react/jsx-uses-vars": "warn",
+    "react/jsx-uses-react": "warn",
   },
-};
+}
