@@ -7,6 +7,7 @@ module Api
     class SecretsController < ApplicationController
       RESPONSE_TIME = ENV.fetch("API_RESPONSE_TIME_SECONDS").to_f
       KEY_LENGTH = ENV.fetch("KEY_LENGTH").to_i
+      MAX_ENCRYPTED_SECRET_SIZE = ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i
       SECRET_LIFETIME_SECONDS = ENV.fetch("SECRET_LIFETIME_HOURS").to_i * 1 * 3600
 
       def show
@@ -20,6 +21,11 @@ module Api
 
       def create
         ensure_response_time(RESPONSE_TIME) do
+          if params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
+            render plain: "Secret too large", layout: false, status: :payload_too_large
+            return
+          end
+
           key = unused_key
           Rails.cache.write(key, params[:secret].read, expires_in: SECRET_LIFETIME_SECONDS)
 
