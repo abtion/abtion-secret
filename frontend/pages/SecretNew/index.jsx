@@ -14,6 +14,7 @@ const LINK_MODE = "LINK_MODE"
 
 export default function SecretNew() {
   const [mode, setMode] = useState(FORM_MODE)
+  const [secret, setSecret] = useState("")
   const [keyPass, setKeyPass] = useState("")
 
   const handleSecretStored = (keyPass) => {
@@ -22,15 +23,19 @@ export default function SecretNew() {
   }
 
   if (mode === FORM_MODE) {
-    return <FormMode onSecretStored={handleSecretStored} />
+    return (
+      <FormMode
+        secret={secret}
+        setSecret={setSecret}
+        onSecretStored={handleSecretStored}
+      />
+    )
   } else if (mode === LINK_MODE) {
     return <LinkMode keyPass={keyPass} onBackClick={() => setMode(FORM_MODE)} />
   }
 }
 
-export function FormMode({ onSecretStored }) {
-  const [secret, setSecret] = useState("")
-
+export function FormMode({ onSecretStored, secret, setSecret }) {
   const handleSubmit = async (event) => {
     event.preventDefault()
 

@@ -16,6 +16,11 @@ export default function AutosizedTextarea({
   }, [])
 
   useEffect(() => {
+    if (restProps.autoFocus) {
+      const end = textareaRef.current.value.length
+      textareaRef.current.setSelectionRange(end, end)
+    }
+
     resize()
     window.addEventListener("resize", resize)
 
