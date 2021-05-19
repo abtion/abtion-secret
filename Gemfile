@@ -11,7 +11,7 @@ gem "rack-attack"
 gem "rails", "~> 6.1.3", require: false
 gem "redis"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-gem "webpacker", "~> 5.3"
+gem "webpacker", "~> 5.4"
 
 group :development, :test do
   gem "brakeman"
