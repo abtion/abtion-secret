@@ -108,7 +108,7 @@ GEM
       rubocop
       smart_properties
     erubi (1.10.0)
-    ffi (1.15.1)
+    ffi (1.15.3)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     html_tokenizer (0.0.7)
