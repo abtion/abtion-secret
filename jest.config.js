@@ -1,5 +1,4 @@
 module.exports = {
-  roots: [
-    "spec/javascript"
-  ]
+  roots: ["frontend"],
+  testRegex: ".*test.js$",
 }
