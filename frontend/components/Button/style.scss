@@ -9,7 +9,7 @@
   background: none;
   width: fit-content;
 
-  &:not(:disabled) {
+  :enabled {
     cursor: pointer;
     color: var(--primary);
 
@@ -25,7 +25,7 @@
   &--primary {
     text-decoration: none;
 
-    &:not(:disabled) {
+    &:enabled {
       background: rgba(var(--secondary-rgb), 0.75);
 
       &:hover {
