@@ -19,7 +19,7 @@ export default function SecretNew() {
 
   if (mode === FORM_MODE) {
     return <SecretForm secret={secret} onSecretStored={handleSecretStored} />
-  } else if (mode === LINK_MODE) {
+  } else {
     return (
       <SecretReceipt keyPass={keyPass} onBackClick={() => setMode(FORM_MODE)} />
     )

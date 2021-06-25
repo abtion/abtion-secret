@@ -1,4 +1,4 @@
 module.exports = {
   roots: ["frontend"],
-  testRegex: ".*test.js$",
+  testRegex: ".*test.jsx?$",
 }
