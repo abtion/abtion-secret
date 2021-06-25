@@ -8,7 +8,7 @@ ruby "2.7.2"
 gem "pry"
 gem "puma", "~> 5.3"
 gem "rack-attack"
-gem "rails", "~> 6.1.3", require: false
+gem "rails", "~> 6.1.4", require: false
 gem "redis"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "webpacker", "~> 5.4"
