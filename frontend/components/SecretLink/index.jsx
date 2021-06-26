@@ -2,7 +2,7 @@ import React from "react"
 
 import ClipboardCopyButton from "../ClipboardCopyButton"
 
-import "./style"
+import "./style.scss"
 
 export default function SecretLink({ children, keyPass }) {
   const link = `${location.origin}/${keyPass}`
