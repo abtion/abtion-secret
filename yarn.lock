@@ -5688,9 +5688,9 @@ jest-runtime@^27.0.4:
     yargs "^16.0.3"
 
 jest-serializer@^27.0.1:
-  version "27.0.1"
-  resolved "https://registry.yarnpkg.com/jest-serializer/-/jest-serializer-27.0.1.tgz#2464d04dcc33fb71dc80b7c82e3c5e8a08cb1020"
-  integrity sha512-svy//5IH6bfQvAbkAEg1s7xhhgHTtXu0li0I2fdKHDsLP2P2MOiscPQIENQep8oU2g2B3jqLyxKKzotZOz4CwQ==
+  version "27.0.6"
+  resolved "https://registry.yarnpkg.com/jest-serializer/-/jest-serializer-27.0.6.tgz#93a6c74e0132b81a2d54623251c46c498bb5bec1"
+  integrity sha512-PtGdVK9EGC7dsaziskfqaAPib6wTViY3G8E5wz9tLVPhHyiDNTZn/xjZ4khAw+09QkoOVpn7vF5nPSN6dtBexA==
   dependencies:
     "@types/node" "*"
     graceful-fs "^4.2.4"
