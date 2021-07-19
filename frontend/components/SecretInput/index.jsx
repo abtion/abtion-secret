@@ -1,7 +1,7 @@
 import React from "react"
 import AutosizedTextarea from "../AutosizedTextarea"
 
-import "./style"
+import "./style.scss"
 
 export default function SecretInput(props) {
   return (
