@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ReactHelper do
   context "when passing React props" do
-    it "renders the props in data " do
+    it "renders the props in data" do
       html = react_component("Foo", { bar: "value" })
       expected_props = %w[data-react-component="Foo"
                           data-react-props="{&quot;bar&quot;:&quot;value&quot;}"]
@@ -15,8 +15,8 @@ RSpec.describe ReactHelper do
     end
   end
 
-  context "when passing camelized props" do
-    it "renders the props in data " do
+  context "when passing snake cased props" do
+    it "renders the props in data in camel case" do
       html = helper.react_component("Foo", { foo_bar: "value" })
       expected_props = %w[data-react-component="Foo"
                           data-react-props="{&quot;fooBar&quot;:&quot;value&quot;}"]
