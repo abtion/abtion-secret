@@ -35,8 +35,8 @@ RSpec.describe ReactHelper do
 
       expected_props = ['data-react-component="Foo"',
                         'data-react-props="{&quot;fooBar&quot;:' \
-                          "[{&quot;userName&quot;:&quot;Jens&quot;}," \
-                          '{&quot;userName&quot;:&quot;Jensen&quot;}],&quot;barFoo&quot;:1}"']
+                        "[{&quot;userName&quot;:&quot;Jens&quot;}," \
+                        '{&quot;userName&quot;:&quot;Jensen&quot;}],&quot;barFoo&quot;:1}"']
 
       expected_props.each do |segment|
         expect(html).to include(segment)
