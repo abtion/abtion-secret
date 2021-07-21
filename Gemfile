@@ -29,7 +29,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "listen", "~> 3.5"
+  gem "listen", "~> 3.6"
   gem "pivotal_git_scripts"
   gem "rack-mini-profiler", "~> 2.3"
   gem "web-console"
