@@ -6,7 +6,7 @@ export default async function (secret, password) {
   const binary = await encrypt({
     message,
     passwords: [password],
-    armor: false,
+    format: "binary",
   })
 
   return new Blob([binary])
