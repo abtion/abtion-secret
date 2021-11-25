@@ -110,7 +110,7 @@ GEM
       smart_properties
     erubi (1.10.0)
     ffi (1.15.4)
-    globalid (0.5.2)
+    globalid (0.6.0)
       activesupport (>= 5.0)
     html_tokenizer (0.0.7)
     i18n (1.8.11)
