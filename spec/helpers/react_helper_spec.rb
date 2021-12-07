@@ -28,7 +28,7 @@ RSpec.describe ReactHelper do
   end
 
   context "when passing nested arrays" do
-    it "renders the props in data " do
+    it "renders the props in data" do
       html = helper.react_component("Foo",
                                     { foo_bar: [{ user_name: "Jens" }, { user_name: "Jensen" }],
                                       bar_foo: 1 })
@@ -49,7 +49,7 @@ RSpec.describe ReactHelper do
       ActionController::Parameters.permit_all_parameters = true
     end
 
-    it "renders the props in data " do
+    it "renders the props in data" do
       params = ActionController::Parameters.new({ bar: "value" })
 
       html = react_component("Foo", params)
