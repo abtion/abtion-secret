@@ -19,7 +19,7 @@ updates:
     allow:
       - dependency-type: "all"
     ignore:
-      - dependency-type: "webpack"
+      - dependency-name: "webpack"
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
