@@ -18,6 +18,9 @@ updates:
       interval: "weekly"
     allow:
       - dependency-type: "all"
+    ignore:
+      - dependency-type: "webpack"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
