@@ -19,7 +19,7 @@ group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "dotenv-rails"
   gem "erb_lint", require: false
-  gem "rspec-rails", "~> 5.0"
+  gem "rspec-rails", "~> 5.1"
   gem "rubocop"
   gem "rubocop-performance"
   gem "rubocop-rails"
