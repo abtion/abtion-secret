@@ -2,7 +2,6 @@
 
 unless Rails.env.production?
   require "rubocop/rake_task"
-  require "bundler/audit/task"
 
   task rubocop: :environment do
     RuboCop::RakeTask.new(:rubocop) do |t|
@@ -16,10 +15,6 @@ unless Rails.env.production?
 
   task brakeman: :environment do
     sh "bundle exec brakeman --quiet --no-summary"
-  end
-
-  task bundle_audit: :environment do
-    sh "bundle exec bundle-audit --update --ignore CVE-2015-9284"
   end
 
   # Configure our own default.
@@ -47,7 +42,6 @@ unless Rails.env.production?
     Rake::Task[:rubocop].invoke
     Rake::Task[:erblint].invoke
     Rake::Task[:brakeman].invoke
-    Rake::Task[:bundle_audit].invoke
     Rake::Task["webpacker:compile"].invoke
     Rake::Task[:spec].invoke
   end

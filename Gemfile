@@ -15,7 +15,6 @@ gem "webpacker", "~> 5.4"
 
 group :development, :test do
   gem "brakeman"
-  gem "bundler-audit"
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "dotenv-rails"
   gem "erb_lint", require: false
