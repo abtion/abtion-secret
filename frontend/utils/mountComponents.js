@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 
 function getValidPaths(contexts) {
   return contexts.reduce((res, context) => res.concat(context.keys()), [])
@@ -44,7 +44,7 @@ function getConstructor(className, contexts) {
   return component
 }
 
-export default function mountComponent(...contexts) {
+export default function mountComponents(...contexts) {
   const nodes = document.querySelectorAll("[data-react-component]")
 
   for (let i = 0; i < nodes.length; ++i) {
@@ -58,6 +58,7 @@ export default function mountComponent(...contexts) {
     const props = propsJson && JSON.parse(propsJson)
 
     const component = React.createElement(constructor, props)
-    ReactDOM.render(component, node)
+    const root = createRoot(node)
+    root.render(component)
   }
 }
