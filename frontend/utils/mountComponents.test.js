@@ -1,3 +1,8 @@
+// We cannot import from @testing-library/react in the test since it messes with our ability to test
+// the behaviour of the "raw" react mounting api (testing library patches it)
+// Therefore we are importing waitFor from @testing-library/dom
+import { waitFor } from "@testing-library/dom"
+
 import React from "react"
 import mountComponents from "./mountComponents"
 
@@ -24,7 +29,7 @@ describe(mountComponents, () => {
     document.body.innerHTML = ""
   })
 
-  it("mounts default exports", () => {
+  it("mounts default exports", async () => {
     const element = document.createElement("div")
     element.setAttribute("data-react-component", "TestComponent")
     element.setAttribute("data-react-props", '{"title":"Title"}')
@@ -36,13 +41,16 @@ describe(mountComponents, () => {
 
     mountComponents(context)
 
-    expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
-    expect(document.body.querySelector(".TestComponent").textContent).toBe(
-      "Title"
-    )
+    await waitFor(() => {
+      expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
+      expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
+      expect(document.body.querySelector(".TestComponent").textContent).toBe(
+        "Title"
+      )
+    })
   })
 
-  it("mounts named exports", () => {
+  it("mounts named exports", async () => {
     const element = document.createElement("div")
     element.setAttribute("data-react-component", "List.TestComponent")
     element.setAttribute("data-react-props", '{"title":"Title"}')
@@ -54,13 +62,15 @@ describe(mountComponents, () => {
 
     mountComponents(context)
 
-    expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
-    expect(document.body.querySelector(".TestComponent").textContent).toBe(
-      "Title"
-    )
+    await waitFor(() => {
+      expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
+      expect(document.body.querySelector(".TestComponent").textContent).toBe(
+        "Title"
+      )
+    })
   })
 
-  it("searches multiple contexts", () => {
+  it("searches multiple contexts", async () => {
     const element = document.createElement("div")
     element.setAttribute("data-react-component", "List.TestComponent")
     element.setAttribute("data-react-props", '{"title":"Title"}')
@@ -73,7 +83,9 @@ describe(mountComponents, () => {
 
     mountComponents(contextA, contextB)
 
-    expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
+    await waitFor(() => {
+      expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
+    })
   })
 
   describe("when component name is invalid", () => {
