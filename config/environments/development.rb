@@ -17,7 +17,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # The application's main DB is the cache store, so we need it to be available in development
-  config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"] }
+  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_URL") }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
