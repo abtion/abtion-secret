@@ -58,7 +58,7 @@ jobs:
       - name: yarn
         run: yarn --frozen-lockfile
       - name: stylelint
-        run: npx stylelint "frontend/**/*.scss"
+        run: npx stylelint "app/javascript/**/*.scss"
   jest:
     runs-on: ubuntu-latest
     steps:
@@ -120,8 +120,8 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: yarn
         run: yarn --frozen-lockfile
-      - name: run bin/webpack
-        run: bin/webpack
+      - name: run bin/webpacker
+        run: bin/webpacker
       - name: rspec
         run: bundle exec rspec
       - name: Archive capybara artifacts
