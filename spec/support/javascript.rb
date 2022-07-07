@@ -4,7 +4,7 @@
 # This will fail feature specs on javascript errors/warnings
 RSpec.configure do |config|
   config.after(:each, type: :feature) do
-    errors = page.driver.browser.manage.logs.get(:browser)
+    errors = page.driver.browser.logs.get("browser")
 
     if errors.present?
       aggregate_failures "javascript errors/warnings" do
