@@ -20,7 +20,7 @@ RSpec.describe(Api::V1::SecretsController, type: :controller) do
 
           post :create, params: { secret: fixture_file_upload(file.path) }
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
           expect(Rails.cache).to have_received(:write)
         end
       end
@@ -33,7 +33,7 @@ RSpec.describe(Api::V1::SecretsController, type: :controller) do
 
           post :create, params: { secret: fixture_file_upload(file.path) }
 
-          expect(response.status).to eq(413)
+          expect(response).to have_http_status(:payload_too_large)
           expect(response.body).to eq("Secret too large")
           expect(Rails.cache).not_to have_received(:write)
         end
