@@ -313,7 +313,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   selenium-webdriver
-  shakapacker (~> 6.5.0)
+  shakapacker (= 6.5.0)
   simplecov
   tzinfo-data
   web-console
