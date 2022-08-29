@@ -48,7 +48,7 @@
     "prettier": "^2.6.2",
     "stylelint": "^14.11.0",
     "stylelint-config-sass-guidelines": "^9.0.0",
-    "webpack-dev-server": "^4.9.3"
+    "webpack-dev-server": "^4.10.0"
   },
   "browserslist": [
     "defaults"
