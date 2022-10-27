@@ -62,7 +62,7 @@ Style/Documentation:
   Enabled: false
 
 Style/MethodCallWithArgsParentheses:
-  IgnoredMethods:
+  AllowedMethods:
     [
       "to",
       "not_to",
