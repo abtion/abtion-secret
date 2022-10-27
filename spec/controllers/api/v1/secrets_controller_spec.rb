@@ -3,7 +3,7 @@
 require "rails_helper"
 require "tempfile"
 
-RSpec.describe(Api::V1::SecretsController, type: :controller) do
+RSpec.describe(Api::V1::SecretsController) do
   describe "POST /" do
     describe "file size limit" do
       max_size = ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i
