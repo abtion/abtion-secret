@@ -9,8 +9,6 @@ class SecretsController < ApplicationController
     /Discord/
   ].freeze
 
-  def new; end
-
   def show
     should_block = BLOCKED_BOTS.any? do |bot|
       bot =~ request.headers["HTTP_USER_AGENT"]
@@ -18,4 +16,6 @@ class SecretsController < ApplicationController
 
     redirect_to(root_path) if should_block
   end
+
+  def new; end
 end
