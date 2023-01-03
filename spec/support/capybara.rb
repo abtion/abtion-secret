@@ -7,7 +7,7 @@ require "webdrivers/chromedriver" unless ENV.key?("DISABLE_WEBDRIVERS")
 # https://github.com/teamcapybara/capybara/blob/master/lib/capybara/registrations/drivers.rb
 
 Capybara.configure do |config|
-  config.server_port = 9887 + ENV["TEST_ENV_NUMBER"].to_i
+  config.server_port = ENV["TEST_ENV_NUMBER"].to_i + 9887
   config.default_max_wait_time = 5
   config.server = :puma, { Silent: true }
   config.default_driver = ENV.fetch("CAPYBARA_DRIVER", "selenium_chrome_headless").to_sym
