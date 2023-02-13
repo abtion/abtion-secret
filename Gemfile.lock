@@ -157,7 +157,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.1)
-    puma (6.0.2)
+    puma (6.1.0)
       nio4r (~> 2.0)
     racc (1.6.2)
     rack (2.2.6.2)
@@ -301,7 +301,7 @@ DEPENDENCIES
   listen (~> 3.8)
   pivotal_git_scripts
   pry
-  puma (~> 6.0)
+  puma (~> 6.1)
   rack-attack
   rack-mini-profiler (~> 3.0)
   rails (~> 7.0.4)
