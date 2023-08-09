@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Secrets" do
+RSpec.describe "Secrets", type: :system do
   it "allows storing and fetching a secret" do
     visit root_path
 
