@@ -27,8 +27,8 @@ RSpec.configure do |config|
         errors.each do |error|
           message = ["Browser error:", error.message, disable_info].join("\n\n")
 
-          expect(error.level).to_not eq("SEVERE"), message
-          expect(error.level).to_not eq("WARNING"), message
+          expect(error.level).not_to(eq("SEVERE"), message)
+          expect(error.level).not_to(eq("WARNING"), message)
         end
       end
     end
