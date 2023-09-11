@@ -8,7 +8,7 @@ ruby "3.2.2"
 gem "pry"
 gem "puma", "~> 6.3"
 gem "rack-attack"
-gem "rails", "~> 7.0.7", require: false
+gem "rails", "~> 7.0.8", require: false
 gem "redis"
 gem "shakapacker", "6.6.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
