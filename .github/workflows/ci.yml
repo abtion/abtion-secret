@@ -93,6 +93,41 @@ jobs:
         run: yarn --frozen-lockfile
       - name: prettier
         run: bin/prettier --check
+  assets-precompile:
+    runs-on: ubuntu-latest
+
+    env:
+      RAILS_ENV: production
+      HEROKU_APP_NAME: dummy
+      REDIS_URL: dummy
+      SECRET_KEY_BASE: dummy
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: install required apt packages
+        run: sudo apt-get -y install libpq-dev
+      - name: get yarn cache directory path
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Setup cache key and directory for node_modules cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+      - name: yarn install
+        run: yarn install --prod
+      - name: run bin/rails assets:precompile
+        run: bin/rails assets:precompile
+
   rspec:
     runs-on: ubuntu-latest
 
@@ -120,8 +155,8 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: yarn
         run: yarn --frozen-lockfile
-      - name: run bin/webpacker
-        run: bin/webpacker
+      - name: run bin/shakapacker
+        run: bin/shakapacker
       - name: rspec
         run: bundle exec rspec
       - name: Archive capybara artifacts

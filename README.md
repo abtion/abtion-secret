@@ -127,7 +127,7 @@ The hooks are symlinked meaning all the changes to the repo hooks will automatic
 Inclusions:
 
 - [Devise](#devise-user-authorization)
-- Webpacker
+- Shakapacker
 - Jest
 - Prettier for linting javascript files
 - RSpec runner

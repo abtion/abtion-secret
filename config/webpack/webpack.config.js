@@ -1,4 +1,5 @@
-const { webpackConfig } = require("shakapacker")
+const { generateWebpackConfig } = require("shakapacker")
+const webpackConfig = generateWebpackConfig()
 const webpack = require("webpack")
 require("./dotenv")
 
