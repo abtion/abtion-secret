@@ -42,7 +42,7 @@ unless Rails.env.production?
     Rake::Task[:rubocop].invoke
     Rake::Task[:erblint].invoke
     Rake::Task[:brakeman].invoke
-    Rake::Task["webpacker:compile"].invoke
+    Rake::Task["shakapacker:compile"].invoke
     Rake::Task[:spec].invoke
   end
 end
