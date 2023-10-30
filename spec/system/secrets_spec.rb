@@ -38,7 +38,7 @@ RSpec.describe "Secrets" do
 
       expect(page).to have_text("Here is your secret")
 
-      visit secret_url
+      refresh
 
       expect(page).to have_text("Your secret is gone...")
     end
