@@ -180,7 +180,7 @@ GEM
     rack (3.0.8)
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
-    rack-mini-profiler (3.1.1)
+    rack-mini-profiler (3.2.0)
       rack (>= 1.2.0)
     rack-proxy (0.7.7)
       rack
@@ -335,7 +335,7 @@ DEPENDENCIES
   pry
   puma (~> 6.4)
   rack-attack
-  rack-mini-profiler (~> 3.1)
+  rack-mini-profiler (~> 3.2)
   rails (~> 7.1.2)
   redis
   rspec-rails (~> 6.1)
