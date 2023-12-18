@@ -17,6 +17,12 @@ end
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by(:selenium, using: ENV.fetch("CAPYBARA_DRIVER", "headless_chrome").to_sym,
-                         screen_size: [1920, 1080])
+                         screen_size: [1920, 1080]) do |capabilities|
+      # Until this is released:
+      #   https://github.com/SeleniumHQ/selenium/pull/13271
+      # Use the recommended workaround:
+      #   https://github.com/SeleniumHQ/selenium/pull/13271#issuecomment-1854042830
+      capabilities.add_argument("--headless=new") if capabilities.args.delete("--headless")
+    end
   end
 end
