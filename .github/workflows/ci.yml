@@ -160,7 +160,7 @@ jobs:
       - name: rspec
         run: bundle exec rspec
       - name: Archive capybara artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: capybara
