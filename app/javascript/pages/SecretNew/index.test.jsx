@@ -30,7 +30,7 @@ describe(SecretNew, () => {
         secret: "",
         onSecretStored: expect.any(Function),
       },
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -49,7 +49,7 @@ describe(SecretNew, () => {
           keyPass: "1234#1234",
           onBackClick: expect.any(Function),
         },
-        expect.anything()
+        expect.anything(),
       )
     })
   })

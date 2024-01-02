@@ -6,7 +6,7 @@ import SecretForm from "."
 
 jest.mock(
   "../../utils/encryptSecret",
-  () => () => Promise.resolve(Buffer.from(""))
+  () => () => Promise.resolve(Buffer.from("")),
 )
 
 beforeEach(() => {
@@ -25,12 +25,12 @@ describe(SecretForm, () => {
     const onSecretStored = jest.fn()
 
     const { getByPlaceholderText, getByText } = render(
-      <SecretForm onSecretStored={onSecretStored} secret="" />
+      <SecretForm onSecretStored={onSecretStored} secret="" />,
     )
 
     await userEvent.type(
       getByPlaceholderText("Write your secret here..."),
-      "The secret"
+      "The secret",
     )
 
     userEvent.click(getByText("Create link"))
@@ -40,7 +40,7 @@ describe(SecretForm, () => {
         "/api/secrets",
         expect.objectContaining({
           body: expect.any(FormData),
-        })
+        }),
       )
     })
 
@@ -53,7 +53,7 @@ describe(SecretForm, () => {
   describe("when secret is too long", () => {
     it("disables the secret button", async () => {
       const { getByPlaceholderText, getByText } = render(
-        <SecretForm secret="" />
+        <SecretForm secret="" />,
       )
 
       const maxSecretChars = parseInt(process.env.MAX_SECRET_CHARS)
@@ -66,7 +66,7 @@ describe(SecretForm, () => {
       fireEvent.change(input, { target: { value: tooLongString } })
 
       const submitButton = getByText(
-        `Secret is too long (${maxSecretChars + 1} / ${maxSecretChars})`
+        `Secret is too long (${maxSecretChars + 1} / ${maxSecretChars})`,
       )
 
       expect(submitButton).toBeInTheDocument()
