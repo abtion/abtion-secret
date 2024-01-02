@@ -41,7 +41,7 @@ export default function SecretShow() {
 
   const confirmBackClick = (event) => {
     const shouldNavigate = confirm(
-      "If you haven't copied your secret yet, you will loose it.\n\nContinue?"
+      "If you haven't copied your secret yet, you will loose it.\n\nContinue?",
     )
 
     if (!shouldNavigate) event.preventDefault()

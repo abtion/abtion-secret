@@ -45,7 +45,7 @@ describe(mountComponents, () => {
       expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
       expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
       expect(document.body.querySelector(".TestComponent").textContent).toBe(
-        "Title"
+        "Title",
       )
     })
   })
@@ -65,7 +65,7 @@ describe(mountComponents, () => {
     await waitFor(() => {
       expect(document.body.querySelector(".TestComponent").tagName).toBe("H1")
       expect(document.body.querySelector(".TestComponent").textContent).toBe(
-        "Title"
+        "Title",
       )
     })
   })
@@ -120,7 +120,7 @@ describe(mountComponents, () => {
       mountComponents(contextA, contextB)
 
       expect(console.error).toHaveBeenCalledWith(
-        "Could not load component: ./TestComponent"
+        "Could not load component: ./TestComponent",
       )
       expect(console.log).toHaveBeenCalledWith("Valid paths are:", [
         "./Component1",

@@ -11,7 +11,7 @@ export default function Button({
   const combinedClassName = classNames(
     "Button",
     `Button--${variant}`,
-    className
+    className,
   )
 
   return <button className={combinedClassName} {...restProps} />

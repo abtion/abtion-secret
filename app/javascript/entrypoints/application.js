@@ -7,7 +7,7 @@ require("../stylesheets/application.scss")
 const pagesContext = require.context(
   "../pages",
   true,
-  /(?<![/.]test(\.jsx?)?)$/
+  /(?<![/.]test(\.jsx?)?)$/,
 )
 
 mountComponents(pagesContext)
