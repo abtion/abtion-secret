@@ -8,7 +8,7 @@ RSpec.describe "Secrets" do
 
     fill_in "secret", with: "this is a secret"
 
-    click_button "Create link"
+    click_on "Create link"
 
     expect(page).to(
       have_text("Link generated")
@@ -19,7 +19,7 @@ RSpec.describe "Secrets" do
     visit secret_url
 
     expect(page).to have_text("Loading your secret...")
-    expect(page).not_to have_field(name: "secret")
+    expect(page).to have_no_field(name: "secret")
 
     expect(page).to have_text("Here is your secret")
     expect(page).to have_field(name: "secret", with: "this is a secret")
@@ -31,7 +31,7 @@ RSpec.describe "Secrets" do
 
       fill_in "secret", with: "this is a secret"
 
-      click_button "Create link"
+      click_on "Create link"
       secret_url = page.find("input[readOnly]").value
 
       visit secret_url
@@ -49,7 +49,7 @@ RSpec.describe "Secrets" do
       visit "not-a-key#not-a-password"
 
       expect(page).to have_text("Loading your secret...")
-      expect(page).not_to have_field(name: "secret")
+      expect(page).to have_no_field(name: "secret")
 
       expect(page).to have_text("Your secret is gone...")
       expect(page).to have_button("Share a secret")
@@ -65,7 +65,7 @@ RSpec.describe "Secrets" do
 
       fill_in "secret", with: too_long_secret
 
-      expect(page).not_to have_button("Create link")
+      expect(page).to have_no_button("Create link")
       expect(page).to(
         have_button("Secret is too long (#{too_long_secret.size} / #{max_secret_chars})",
                     disabled: true)
