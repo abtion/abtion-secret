@@ -5697,16 +5697,16 @@ jest-util@^29.3.1, jest-util@^29.4.1, jest-util@^29.4.2, jest-util@^29.5.0, jest
     picomatch "^2.2.3"
 
 jest-validate@^29.3.1, jest-validate@^29.4.1, jest-validate@^29.4.2, jest-validate@^29.5.0:
-  version "29.6.1"
-  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-29.6.1.tgz#765e684af6e2c86dce950aebefbbcd4546d69f7b"
-  integrity sha512-r3Ds69/0KCN4vx4sYAbGL1EVpZ7MSS0vLmd3gV78O+NAx3PDQQukRU5hNHPXlyqCgFY8XUk7EuTMLugh0KzahA==
+  version "29.7.0"
+  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-29.7.0.tgz#7bf705511c64da591d46b15fce41400d52147d9c"
+  integrity sha512-ZB7wHqaRGVw/9hST/OuFUReG7M8vKeq0/J2egIGLdvjHCmYqGARhzXmtgi+gVeZ5uXFF219aOc3Ls2yLg27tkw==
   dependencies:
-    "@jest/types" "^29.6.1"
+    "@jest/types" "^29.6.3"
     camelcase "^6.2.0"
     chalk "^4.0.0"
-    jest-get-type "^29.4.3"
+    jest-get-type "^29.6.3"
     leven "^3.1.0"
-    pretty-format "^29.6.1"
+    pretty-format "^29.7.0"
 
 jest-watcher@^29.3.1, jest-watcher@^29.4.2:
   version "29.4.2"
