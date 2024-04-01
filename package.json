@@ -21,7 +21,7 @@
     "openpgp": "^5.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.69.7",
+    "sass": "^1.72.0",
     "sass-loader": "^13.3.3",
     "shakapacker": "7.1.0",
     "terser-webpack-plugin": "5",
