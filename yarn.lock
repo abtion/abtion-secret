@@ -5552,14 +5552,14 @@ node-releases@^2.0.14:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
-node-sass-glob-importer@^5.3.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/node-sass-glob-importer/-/node-sass-glob-importer-5.3.2.tgz#465581e46027c0e9520e6d87f7e6eda858a14acb"
-  integrity sha512-QTX7KPsISgp55REV6pMH703nzHfWCOEYEQC0cDyTRo7XO6WDvyC0OAzekuQ4gs505IZcxv9KxZ3uPJ5s5H9D3g==
+node-sass-glob-importer@^5.3.3:
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/node-sass-glob-importer/-/node-sass-glob-importer-5.3.3.tgz#08a4bc0185b6648e4da0e2b52c2715142c66bd6a"
+  integrity sha512-888UlmX8fiGMCQ+8/w6e3VjPlmuIPBQfbupAGnG0kfQbpto9OtofULN1xCmlvKD5e38Sz+PpETXqgogheqAMqQ==
   dependencies:
-    node-sass-magic-importer "^5.3.2"
+    node-sass-magic-importer "^5.3.3"
 
-node-sass-magic-importer@^5.3.2:
+node-sass-magic-importer@^5.3.3:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/node-sass-magic-importer/-/node-sass-magic-importer-5.3.3.tgz#247541149c3230a6f5e8f110ab39afffb41af583"
   integrity sha512-xB4yH7laj00SBIZO9Hwke3XDSqMcz+6IM7TgcxU9Ri6m6Pn8MBWwgG5HLmgZkQX3W2osUhx+k7WSOzzunuTKVw==
