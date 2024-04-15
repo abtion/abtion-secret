@@ -649,11 +649,11 @@
     "@babel/helper-plugin-utils" "^7.24.0"
 
 "@babel/plugin-transform-block-scoping@^7.20.2":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.22.5.tgz#8bfc793b3a4b2742c0983fadc1480d843ecea31b"
-  integrity sha512-EcACl1i5fSQ6bt+YGuU/XGCeZKStLmyVGytWkpyhCLeQVA0eu6Wtiw92V+I1T/hnezUv7j74dA/Ro69gWcU+hg==
+  version "7.24.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-block-scoping/-/plugin-transform-block-scoping-7.24.4.tgz#28f5c010b66fbb8ccdeef853bef1935c434d7012"
+  integrity sha512-nIFUZIpGKDf9O9ttyRXpHFpKC+X3Y5mtshZONuEUYBomAKoM4y029Jr+uB1bHGPhNmK8YXHevDtKDOLmtRrp6g==
   dependencies:
-    "@babel/helper-plugin-utils" "^7.22.5"
+    "@babel/helper-plugin-utils" "^7.24.0"
 
 "@babel/plugin-transform-classes@^7.20.2":
   version "7.20.7"
