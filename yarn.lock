@@ -728,11 +728,11 @@
     "@babel/helper-plugin-utils" "^7.22.5"
 
 "@babel/plugin-transform-literals@^7.18.9":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-literals/-/plugin-transform-literals-7.22.5.tgz#e9341f4b5a167952576e23db8d435849b1dd7920"
-  integrity sha512-fTLj4D79M+mepcw3dgFBTIDYpbcB9Sm0bpm4ppXPaO+U+PKFFyV9MGRvS0gvGw62sd10kT5lRMKXAADb9pWy8g==
+  version "7.24.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-literals/-/plugin-transform-literals-7.24.1.tgz#0a1982297af83e6b3c94972686067df588c5c096"
+  integrity sha512-zn9pwz8U7nCqOYIiBaOxoQOtYmMODXTJnkxG4AtX8fPmnCRYWBOHD0qcpwS9e2VDSp1zNJYpdnFMIKb8jmwu6g==
   dependencies:
-    "@babel/helper-plugin-utils" "^7.22.5"
+    "@babel/helper-plugin-utils" "^7.24.0"
 
 "@babel/plugin-transform-member-expression-literals@^7.18.6":
   version "7.18.6"
