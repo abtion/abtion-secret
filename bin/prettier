@@ -1,2 +1,2 @@
 #!/bin/sh
-yarn prettier app/javascript $@
+npx prettier app/javascript $@
