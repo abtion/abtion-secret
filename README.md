@@ -20,9 +20,9 @@ This project is built on top of [Muffi](https://github.com/abtion/muffi).
 
 abtion-secret is a self-hosted service that makes it possible to safely share secrets (text strings) through links.
 
-URL: https://secret.abtion.com
+URL: <https://secret.abtion.com>
 
-Asana: https://app.asana.com/0/1200290320241129/board
+Asana: <https://app.asana.com/0/1200290320241129/board>
 
 The technical implementation works like this:
 
@@ -45,8 +45,7 @@ Since the password is in the hash-part of the URL it is never sent to the server
 You must have the following installed and available on your machine:
 
 - **Ruby 2.7.x**
-- **Node JS 12.x**
-- **Yarn 1.x**
+- **Node JS 18.x**
 - **Redis**
 
 # Developing
@@ -76,7 +75,7 @@ Run: `bin/setup`
 Download the correct version of chromedriver.\*
 
 ```sh
-$ bundle exec rails webdrivers:chromedriver:update
+bundle exec rails webdrivers:chromedriver:update
 ```
 
 \*_It will try to do this automatically when running the tests, but if you disable network with webmock/vcr your tests will fail when it does._
@@ -95,7 +94,7 @@ bundle exec rspec
 bundle exec rubocop
 bundle exec brakeman --quiet --no-summary
 bundle exec erblint --lint-all
-yarn lint
+npm run lint
 ```
 
 Or instead, you can run `rails test_all_strict`
@@ -151,4 +150,4 @@ Current dyno types and add-on plans can be found in the project's [heroku dashbo
 The `main` branch is automatically deployed to the production env.
 
 Remote (App)
-Production https://git.heroku.com/abtion-secret.git (https://abtion-secret.herokuapp.com/)
+Production <https://git.heroku.com/abtion-secret.git> (<https://abtion-secret.herokuapp.com/>)
