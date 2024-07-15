@@ -22,7 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.72.0",
-    "sass-loader": "^13.3.3",
+    "sass-loader": "^14.2.1",
     "shakapacker": "8.0.0",
     "terser-webpack-plugin": "5",
     "webpack": "5",
