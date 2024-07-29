@@ -16,5 +16,6 @@ const sassLoader = sassRule.use.find((use) => {
 })
 
 sassLoader.options.sassOptions.importer = nodeSassGlobImporter()
+sassLoader.options.api = "legacy"
 
 module.exports = webpackConfig
