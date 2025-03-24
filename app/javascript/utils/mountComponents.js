@@ -11,9 +11,7 @@ function requireComponent(requirePath, contexts) {
       // Loading a component will raise an error if it fails
       // but we want to be able to try multiple contexts
       return context(requirePath)
-    } catch (_e) {
-      // eslint-disable-line
-    }
+    } catch (_e) {} // eslint-disable-line
   }
 }
 
