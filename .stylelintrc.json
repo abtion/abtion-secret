@@ -5,16 +5,15 @@
     "max-nesting-depth": 3,
     "selector-max-compound-selectors": 4,
     "selector-no-qualifying-type": null,
-    "string-quotes": "double",
-    "order/properties-alphabetical-order": null,
-    "declaration-bang-space-before": null,
-    "declaration-colon-space-after": null,
-    "no-missing-end-of-source-newline": null,
-    "number-leading-zero": null,
-    "selector-list-comma-newline-after": null,
     "selector-class-pattern": null,
-    "indentation": null,
-    "color-hex-case": null,
-    "function-comma-space-after": null
+    "@stylistic/string-quotes": "double",
+    "@stylistic/declaration-bang-space-before": null,
+    "@stylistic/declaration-colon-space-after": null,
+    "@stylistic/no-missing-end-of-source-newline": null,
+    "@stylistic/number-leading-zero": null,
+    "@stylistic/selector-list-comma-newline-after": null,
+    "@stylistic/indentation": null,
+    "@stylistic/color-hex-case": null,
+    "@stylistic/function-comma-space-after": null
   }
 }
