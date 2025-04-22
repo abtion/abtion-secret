@@ -3,7 +3,6 @@
 // Therefore we are importing waitFor from @testing-library/dom
 import { waitFor } from "@testing-library/dom"
 
-import React from "react"
 import mountComponents from "./mountComponents"
 
 const buildContextMock = (componentsByPath) => {

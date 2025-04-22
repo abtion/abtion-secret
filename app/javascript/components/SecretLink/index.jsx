@@ -1,5 +1,3 @@
-import React from "react"
-
 import ClipboardCopyButton from "../ClipboardCopyButton"
 
 import "./style.scss"
