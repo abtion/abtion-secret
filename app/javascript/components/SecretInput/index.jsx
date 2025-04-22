@@ -1,4 +1,3 @@
-import React from "react"
 import AutosizedTextarea from "../AutosizedTextarea"
 
 import "./style.scss"

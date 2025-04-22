@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 
 import SecretForm from "../../components/SecretForm"
 import SecretReceipt from "../../components/SecretReceipt"

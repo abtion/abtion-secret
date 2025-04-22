@@ -1,4 +1,3 @@
-import React from "react"
 import { act, render } from "@testing-library/react"
 
 import SecretNew from "."
@@ -30,7 +29,7 @@ describe(SecretNew, () => {
         secret: "",
         onSecretStored: expect.any(Function),
       },
-      expect.anything(),
+      undefined,
     )
   })
 
@@ -49,7 +48,7 @@ describe(SecretNew, () => {
           keyPass: "1234#1234",
           onBackClick: expect.any(Function),
         },
-        expect.anything(),
+        undefined,
       )
     })
   })

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 
 import generatePassword from "../../utils/generatePassword"
 import encryptSecret from "../../utils/encryptSecret"
