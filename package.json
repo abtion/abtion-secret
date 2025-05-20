@@ -18,7 +18,7 @@
     "dotenv": "^16.4.1",
     "mini-css-extract-plugin": "^2.8.0",
     "node-sass-glob-importer": "^5.3.3",
-    "openpgp": "^6.1.0",
+    "openpgp": "^6.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sass": "^1.72.0",
