@@ -8,7 +8,7 @@ ruby "3.2.2"
 gem "pry"
 gem "puma", "~> 6.6"
 gem "rack-attack"
-gem "rails", "~> 7.2.0", require: false
+gem "rails", "~> 8.0.2"
 gem "redis"
 gem "shakapacker", "8.3.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
@@ -27,7 +27,6 @@ group :development, :test do
 end
 
 group :development do
-  gem "listen", "~> 3.9"
   gem "pivotal_git_scripts"
   gem "rack-mini-profiler", "~> 4.0"
   gem "web-console"
