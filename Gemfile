@@ -10,7 +10,7 @@ gem "puma", "~> 7.0"
 gem "rack-attack"
 gem "rails", "~> 8.0.2"
 gem "redis"
-gem "shakapacker", "8.3.0"
+gem "shakapacker", "8.4.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development, :test do
