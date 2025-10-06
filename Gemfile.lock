@@ -164,7 +164,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pivotal_git_scripts (1.4.0)
-    pp (0.6.2)
+    pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
     prism (1.4.0)
@@ -224,9 +224,10 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
-    rdoc (6.14.2)
+    rdoc (6.15.0)
       erb
       psych (>= 4.0.0)
+      tsort
     redis (5.4.1)
       redis-client (>= 0.22.0)
     redis-client (0.26.1)
@@ -291,7 +292,7 @@ GEM
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     semantic_range (3.1.0)
-    shakapacker (8.4.0)
+    shakapacker (9.0.0)
       activesupport (>= 5.2)
       package_json
       rack-proxy (>= 0.6.1)
@@ -351,7 +352,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   selenium-webdriver (>= 4.11)
-  shakapacker (= 8.4.0)
+  shakapacker (= 9.0.0)
   simplecov
   tzinfo-data
   web-console
