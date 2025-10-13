@@ -15,7 +15,7 @@
     "classnames": "^2.5.1",
     "compression-webpack-plugin": "11",
     "css-loader": "^7.1.2",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "mini-css-extract-plugin": "^2.9.4",
     "node-sass-glob-importer": "^5.3.3",
     "openpgp": "^6.1.1",
