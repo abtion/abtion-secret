@@ -11,11 +11,11 @@ gem "rack-attack"
 gem "rails", "~> 8.0.2"
 gem "redis"
 gem "shakapacker", "8.4.0"
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "tzinfo-data", platforms: [:windows, :jruby]
 
 group :development, :test do
   gem "brakeman"
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug", platforms: [:mri, :windows]
   gem "dotenv-rails"
   gem "erb_lint", require: false
   gem "rspec-rails", "~> 8.0"
