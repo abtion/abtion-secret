@@ -178,7 +178,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (7.0.4)
+    puma (7.1.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.3)
@@ -343,7 +343,7 @@ DEPENDENCIES
   erb_lint
   pivotal_git_scripts
   pry
-  puma (~> 7.0)
+  puma (~> 7.1)
   rack-attack
   rack-mini-profiler (~> 4.0)
   rails (~> 8.0.2)
