@@ -8,7 +8,7 @@ ruby file: ".tool-versions"
 gem "pry"
 gem "puma", "~> 7.1"
 gem "rack-attack"
-gem "rails", "~> 8.0.2"
+gem "rails", "~> 8.1.1"
 gem "redis"
 gem "shakapacker", "8.4.0"
 gem "tzinfo-data", platforms: [:windows, :jruby]
