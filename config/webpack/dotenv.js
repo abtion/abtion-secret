@@ -7,6 +7,4 @@ const dotenvFiles = [
   ".env",
 ]
 
-dotenvFiles.forEach((dotenvFile) => {
-  dotenv.config({ path: dotenvFile, silent: true })
-})
+dotenv.config({ path: dotenvFiles, quiet: true })
