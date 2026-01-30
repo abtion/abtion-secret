@@ -72,17 +72,14 @@ export default function SecretShow() {
 
       <SecretInput value={secret} readOnly />
 
-      <ClipboardCopyButton
-        value={secret}
-        variant="primary"
-        className="float-right"
-      >
-        Copy to clipboard
-      </ClipboardCopyButton>
-
-      <a href="/" onClick={confirmBackClick}>
-        <Button className="float-right">Share a secret</Button>
-      </a>
+      <div className="flex justify-end">
+        <a href="/" onClick={confirmBackClick}>
+          <Button>Share a secret</Button>
+        </a>
+        <ClipboardCopyButton value={secret} variant="primary">
+          Copy to clipboard
+        </ClipboardCopyButton>
+      </div>
     </>
   )
 }

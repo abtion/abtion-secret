@@ -11,15 +11,11 @@ export default function SecretLink({ children, keyPass }) {
         <input type="text" className="SecretLink__url" readOnly value={link} />
       </div>
 
-      <div className="SecretLink__buttons">
-        <ClipboardCopyButton
-          variant="primary"
-          className="float-right"
-          value={link}
-        >
+      <div className="flex justify-end">
+        {children}
+        <ClipboardCopyButton variant="primary" value={link}>
           Copy to clipboard
         </ClipboardCopyButton>
-        {children}
       </div>
     </>
   )

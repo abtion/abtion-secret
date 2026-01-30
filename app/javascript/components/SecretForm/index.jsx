@@ -51,15 +51,13 @@ export default function SecretForm({ onSecretStored, secret: initialSecret }) {
           onChange={handleSecretChange}
         />
 
-        <Button
-          variant="primary"
-          className="float-right"
-          disabled={secretIsTooLong}
-        >
-          {secretIsTooLong
-            ? `Secret is too long (${secret.length} / ${maxSecretChars})`
-            : "Create link"}
-        </Button>
+        <div className="flex justify-end">
+          <Button variant="primary" disabled={secretIsTooLong}>
+            {secretIsTooLong
+              ? `Secret is too long (${secret.length} / ${maxSecretChars})`
+              : "Create link"}
+          </Button>
+        </div>
       </form>
     </>
   )

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react"
 
 export default function AutosizedTextarea({
-  minHeight = 500,
+  minHeight = 450,
   onChange,
   ...restProps
 }) {

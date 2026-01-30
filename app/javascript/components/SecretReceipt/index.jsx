@@ -9,9 +9,7 @@ export default function LinkMode({ keyPass, onBackClick }) {
       <p>Remember! It can only be used once</p>
 
       <SecretLink keyPass={keyPass}>
-        <Button className="float-right" onClick={onBackClick}>
-          Back
-        </Button>
+        <Button onClick={onBackClick}>Back</Button>
       </SecretLink>
     </>
   )
