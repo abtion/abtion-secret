@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Secrets" do
-  it "allows storing and fetching a secret" do
+  it "allows storing and fetching a secret" do # rubocop:disable RSpec/MultipleExpectations
     visit root_path
 
     fill_in "secret", with: "this is a secret"
@@ -17,6 +17,9 @@ RSpec.describe "Secrets" do
     secret_url = page.find("input[readOnly]").value
 
     visit secret_url
+
+    expect(page).to have_text("Ready to see your secret?")
+    click_on "Show me the secret"
 
     expect(page).to have_text("Loading your secret...")
     expect(page).to have_no_field(name: "secret")
@@ -36,9 +39,13 @@ RSpec.describe "Secrets" do
 
       visit secret_url
 
+      click_on "Show me the secret"
+
       expect(page).to have_text("Here is your secret")
 
       refresh
+
+      click_on "Show me the secret"
 
       expect(page).to have_text("Your secret is gone...")
     end
@@ -47,6 +54,9 @@ RSpec.describe "Secrets" do
   context "when there's no such secret" do
     it "shows a failure message" do
       visit "not-a-key#not-a-password"
+
+      expect(page).to have_text("Ready to see your secret?")
+      click_on "Show me the secret"
 
       expect(page).to have_text("Loading your secret...")
       expect(page).to have_no_field(name: "secret")
