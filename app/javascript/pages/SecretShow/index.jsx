@@ -23,8 +23,8 @@ export default function SecretShow() {
 
   const initialize = async () => {
     try {
-      const key = location.pathname.substr(1)
-      const password = location.hash.substr(1)
+      const key = location.pathname.substring(1)
+      const password = location.hash.substring(1)
       const encryptedSecret = await fetchEncryptedSecret(key)
       const secret = await decryptSecret(encryptedSecret, password)
 
