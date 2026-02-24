@@ -10,6 +10,7 @@ const SUCCESS = "SUCCESS"
 const FAILURE = "FAILURE"
 
 export default function SecretShow() {
+  const [showSecret, setShowSecret] = useState(false)
   const [loadState, setLoadState] = useState(LOADING)
   const [secret, setSecret] = useState("")
 
@@ -36,8 +37,8 @@ export default function SecretShow() {
   }
 
   useEffect(() => {
-    initialize()
-  }, [])
+    if (showSecret) initialize()
+  }, [showSecret])
 
   const confirmBackClick = (event) => {
     const shouldNavigate = confirm(
@@ -45,6 +46,22 @@ export default function SecretShow() {
     )
 
     if (!shouldNavigate) event.preventDefault()
+  }
+
+  if (!showSecret) {
+    return (
+      <>
+        <h1>Ready to see your secret?</h1>
+        <p>
+          The secret can only be viewed once. Make sure you're ready before
+          proceeding.
+        </p>
+
+        <Button variant="primary" onClick={() => setShowSecret(true)}>
+          Show me the secret
+        </Button>
+      </>
+    )
   }
 
   if (loadState === LOADING) {
