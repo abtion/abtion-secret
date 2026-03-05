@@ -6,7 +6,7 @@ require "tempfile"
 RSpec.describe(Api::V1::SecretsController) do
   describe "POST /" do
     describe "file size limit" do
-      max_size = ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i
+      let(:max_size) { ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i }
 
       before do
         allow(Rails.cache).to receive(:write).and_call_original
