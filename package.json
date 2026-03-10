@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
-    "compression-webpack-plugin": "11",
+    "compression-webpack-plugin": "12",
     "css-loader": "^7.1.2",
     "dotenv": "^17.2.3",
     "mini-css-extract-plugin": "^2.9.4",
@@ -17,7 +17,7 @@
     "react-dom": "^19.2.0",
     "sass": "^1.94.2",
     "sass-loader": "^16.0.6",
-    "shakapacker": "9.5.0",
+    "shakapacker": "9.6.1",
     "swc-loader": "^0.2.6",
     "terser-webpack-plugin": "^5.0.0",
     "webpack": "^5.105.4",
