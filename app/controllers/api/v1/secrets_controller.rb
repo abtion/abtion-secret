@@ -23,7 +23,7 @@ module Api
       def create
         ensure_response_time(RESPONSE_TIME) do
           if params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
-            render plain: "Secret too large", layout: false, status: :payload_too_large
+            render plain: "Secret too large", layout: false, status: :content_too_large
             return
           end
 
