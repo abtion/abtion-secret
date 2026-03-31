@@ -4,6 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Secrets" do
   it "allows storing and fetching a secret" do # rubocop:disable RSpec/MultipleExpectations
+    stub_const("Api::V1::SecretsController::RESPONSE_TIME", 2)
+
     visit root_path
 
     fill_in "secret", with: "this is a secret"
