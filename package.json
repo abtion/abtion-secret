@@ -16,7 +16,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.2.0",
     "sass": "^1.94.2",
-    "sass-loader": "^16.0.6",
+    "sass-loader": "^16.0.7",
     "shakapacker": "9.6.1",
     "swc-loader": "^0.2.6",
     "terser-webpack-plugin": "^5.0.0",
