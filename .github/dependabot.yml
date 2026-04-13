@@ -12,7 +12,7 @@ updates:
       # Actually keep everything updated (if you remove this, keep the above ones).
       - dependency-type: "all"
     cooldown:
-      default-days: 7
+      default-days: 1
       exclude:
         - "brakeman"
 
@@ -27,7 +27,7 @@ updates:
       - dependency-name: "webpack"
         update-types: ["version-update:semver-major"]
     cooldown:
-      default-days: 7
+      default-days: 1
 
   - package-ecosystem: "github-actions"
     directory: "/"
