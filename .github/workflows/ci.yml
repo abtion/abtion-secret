@@ -77,7 +77,13 @@ jobs:
       - name: npm
         run: npm ci
       - name: test
-        run: npm test
+        run: npm test -- --coverage
+      - name: Upload Jest coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jest_coverage
+          path: coverage/js/lcov.info
   prettier:
     runs-on: ubuntu-latest
     steps:
@@ -149,9 +155,36 @@ jobs:
         run: bin/shakapacker
       - name: rspec
         run: bundle exec rspec
+      - name: Upload RSpec coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rspec_coverage
+          path: coverage/.resultset.json
       - name: Archive capybara artifacts
         uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: capybara
           path: tmp/capybara/
+
+  coverage_and_sonar:
+    needs: [rspec, jest]
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8
+        with:
+          path: coverage-artifacts
+      - name: Arrange coverage files
+        run: |
+          mkdir -p coverage coverage/js
+          [ -f coverage-artifacts/rspec_coverage/.resultset.json ] && cp coverage-artifacts/rspec_coverage/.resultset.json coverage/.resultset.json || true
+          [ -f coverage-artifacts/jest_coverage/lcov.info ] && cp coverage-artifacts/jest_coverage/lcov.info coverage/js/lcov.info || true
+      - uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

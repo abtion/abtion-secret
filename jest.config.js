@@ -2,6 +2,8 @@ module.exports = {
   roots: ["app/javascript"],
   testRegex: ".*test.jsx?$",
   testEnvironment: "jsdom",
+  coverageDirectory: "coverage/js",
+  coverageReporters: ["text", "lcov"],
   transform: {
     "^.+\\.(t|j)sx?$": ["@swc/jest", require("./config/swc.config.js").options],
   },
