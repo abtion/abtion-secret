@@ -300,7 +300,7 @@ GEM
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     semantic_range (3.1.1)
-    shakapacker (9.6.1)
+    shakapacker (10.0.0)
       activesupport (>= 5.2)
       package_json
       rack-proxy (>= 0.6.1)
@@ -360,7 +360,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   selenium-webdriver (>= 4.11)
-  shakapacker (= 9.6.1)
+  shakapacker (= 10.0.0)
   simplecov
   tzinfo-data
   web-console
