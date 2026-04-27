@@ -49,6 +49,52 @@ describe(SecretForm, () => {
     })
   })
 
+  it("sends the chosen lifetime in the request body", async () => {
+    const onSecretStored = jest.fn()
+
+    const { getByPlaceholderText, getByText, getByLabelText } = render(
+      <SecretForm onSecretStored={onSecretStored} secret="" />,
+    )
+
+    await userEvent.type(
+      getByPlaceholderText("Write your secret here..."),
+      "The secret",
+    )
+
+    await userEvent.selectOptions(getByLabelText("Link lifetime"), "7")
+
+    userEvent.click(getByText("Create link"))
+
+    await waitFor(() => {
+      expect(window.fetch).toHaveBeenCalled()
+    })
+
+    const formData = window.fetch.mock.calls[0][1].body
+    expect(formData.get("lifetime_days")).toBe("7")
+  })
+
+  it("defaults the lifetime to 1 day", async () => {
+    const onSecretStored = jest.fn()
+
+    const { getByPlaceholderText, getByText } = render(
+      <SecretForm onSecretStored={onSecretStored} secret="" />,
+    )
+
+    await userEvent.type(
+      getByPlaceholderText("Write your secret here..."),
+      "The secret",
+    )
+
+    userEvent.click(getByText("Create link"))
+
+    await waitFor(() => {
+      expect(window.fetch).toHaveBeenCalled()
+    })
+
+    const formData = window.fetch.mock.calls[0][1].body
+    expect(formData.get("lifetime_days")).toBe("1")
+  })
+
   describe("when secret is too long", () => {
     it("disables the secret button", async () => {
       const { getByPlaceholderText, getByText } = render(
