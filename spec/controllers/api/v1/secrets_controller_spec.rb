@@ -39,5 +39,82 @@ RSpec.describe(Api::V1::SecretsController) do
         end
       end
     end
+
+    describe "lifetime" do
+      let(:max_days) { ENV.fetch("MAX_SECRET_LIFETIME_DAYS").to_i }
+      let(:secret_file) do
+        file = Tempfile.new("encrypted-secret")
+        file.write("a")
+        file.close
+        file
+      end
+
+      before do
+        allow(Rails.cache).to receive(:write).and_call_original
+      end
+
+      context "when lifetime_days is omitted" do
+        it "stores the secret with a 1-day TTL" do
+          post :create, params: { secret: fixture_file_upload(secret_file.path) }
+
+          expect(response).to have_http_status(:ok)
+          expect(Rails.cache).to have_received(:write).with(
+            anything, anything, expires_in: 1 * 24 * 3600
+          )
+        end
+      end
+
+      context "when lifetime_days is within range" do
+        it "stores the secret with the requested TTL" do
+          post :create, params: {
+            secret: fixture_file_upload(secret_file.path),
+            lifetime_days: 7
+          }
+
+          expect(response).to have_http_status(:ok)
+          expect(Rails.cache).to have_received(:write).with(
+            anything, anything, expires_in: 7 * 24 * 3600
+          )
+        end
+      end
+
+      context "when lifetime_days is zero" do
+        it "returns 422 and does not store the secret" do
+          post :create, params: {
+            secret: fixture_file_upload(secret_file.path),
+            lifetime_days: 0
+          }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to eq("Invalid lifetime")
+          expect(Rails.cache).not_to have_received(:write)
+        end
+      end
+
+      context "when lifetime_days exceeds the configured maximum" do
+        it "returns 422 and does not store the secret" do
+          post :create, params: {
+            secret: fixture_file_upload(secret_file.path),
+            lifetime_days: max_days + 1
+          }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to eq("Invalid lifetime")
+          expect(Rails.cache).not_to have_received(:write)
+        end
+      end
+
+      context "when lifetime_days is non-numeric" do
+        it "returns 422 and does not store the secret" do
+          post :create, params: {
+            secret: fixture_file_upload(secret_file.path),
+            lifetime_days: "abc"
+          }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(Rails.cache).not_to have_received(:write)
+        end
+      end
+    end
   end
 end
