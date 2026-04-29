@@ -1,21 +1,11 @@
 {
   "addons": [
-    "heroku-redis:hobby-dev"
+    "heroku-redis:premium-0"
   ],
   "buildpacks": [],
-  "env": {
-    "MAIL_FROM": {
-      "required": true
-    },
-    "SEED_ADMIN_EMAIL": {
-      "required": true
-    },
-    "SEED_ADMIN_INITIAL_PASSWORD": {
-      "required": true
-    }
-  },
+  "env": {},
   "formation": {},
   "name": "abtion-secret",
   "scripts": {},
-  "stack": "heroku-18"
+  "stack": "heroku-24"
 }
