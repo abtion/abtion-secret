@@ -40,4 +40,30 @@ RSpec.describe(Api::V1::SecretsController) do
       end
     end
   end
+
+  describe "GET /:id" do
+    describe "secret lifetime" do
+      include ActiveSupport::Testing::TimeHelpers
+
+      let(:lifetime_seconds) { ENV.fetch("SECRET_LIFETIME_HOURS").to_i * 3600 }
+      let(:key) { "test-key" }
+      let(:payload) { "encrypted-payload-bytes" }
+
+      before { Rails.cache.write("secret-#{key}", payload, expires_in: lifetime_seconds) }
+
+      it "returns the secret while still within its lifetime" do
+        travel_to(Time.current + lifetime_seconds - 1.second) do
+          get :show, params: { id: key }
+          expect(response.body).to eq(payload)
+        end
+      end
+
+      it "returns an empty body once the lifetime has elapsed" do
+        travel_to(Time.current + lifetime_seconds + 1.second) do
+          get :show, params: { id: key }
+          expect(response.body).to be_empty
+        end
+      end
+    end
+  end
 end
