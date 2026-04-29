@@ -17,6 +17,7 @@ const compat = new FlatCompat({
 export default defineConfig([
   globalIgnores(["**/coverage", "public/packs*", "**/node_modules"]),
   {
+    files: ["**/*.{js,jsx,mjs,cjs}"],
     extends: compat.extends("eslint:recommended", "prettier"),
 
     plugins: {
@@ -52,6 +53,11 @@ export default defineConfig([
       ],
       "react/jsx-uses-vars": "warn",
       "react/jsx-uses-react": "warn",
+
+      "no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
 
       // Don't allow console.log
       "no-console": ["error"],
