@@ -5,6 +5,28 @@ require "tempfile"
 
 RSpec.describe(Api::V1::SecretsController) do
   describe "POST /" do
+    describe "key generation" do
+      let(:key_length) { Api::V1::SecretsController::KEY_LENGTH }
+      let(:colliding_key) { "a" * key_length }
+      let(:fresh_key) { "b" * key_length }
+
+      it "regenerates the key when the first candidate already exists in the cache" do
+        Rails.cache.write("secret-#{colliding_key}", "occupant")
+        allow(SecureRandom).to receive(:urlsafe_base64).and_return(colliding_key, fresh_key)
+
+        file = Tempfile.new("encryped-secret")
+        file.write("payload")
+        file.close
+
+        post :create, params: { secret: fixture_file_upload(file.path) }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq(fresh_key)
+        expect(SecureRandom).to have_received(:urlsafe_base64).twice
+        expect(Rails.cache.read("secret-#{colliding_key}")).to eq("occupant")
+      end
+    end
+
     describe "file size limit" do
       let(:max_size) { ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i }
 
