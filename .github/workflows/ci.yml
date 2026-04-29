@@ -184,7 +184,7 @@ jobs:
           mkdir -p coverage coverage/js
           [ -f coverage-artifacts/rspec_coverage/coverage.json ] && cp coverage-artifacts/rspec_coverage/coverage.json coverage/coverage.json || true
           [ -f coverage-artifacts/jest_coverage/lcov.info ] && cp coverage-artifacts/jest_coverage/lcov.info coverage/js/lcov.info || true
-      - uses: SonarSource/sonarqube-scan-action@v7
+      - uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
