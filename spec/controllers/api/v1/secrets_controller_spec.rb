@@ -14,11 +14,12 @@ RSpec.describe(Api::V1::SecretsController) do
         Rails.cache.write("secret-#{colliding_key}", "occupant")
         allow(SecureRandom).to receive(:urlsafe_base64).and_return(colliding_key, fresh_key)
 
-        file = Tempfile.new("encryped-secret")
-        file.write("payload")
-        file.close
+        Tempfile.create("encrypted-secret") do |file|
+          file.write("payload")
+          file.close
 
-        post :create, params: { secret: fixture_file_upload(file.path) }
+          post :create, params: { secret: fixture_file_upload(file.path) }
+        end
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq(fresh_key)
@@ -36,11 +37,12 @@ RSpec.describe(Api::V1::SecretsController) do
 
       context "when encrypted secret is not too large" do
         it "returns a 200 (Ok)" do
-          file = Tempfile.new("encryped-secret")
-          file.write("a" * max_size)
-          file.close
+          Tempfile.create("encrypted-secret") do |file|
+            file.write("a" * max_size)
+            file.close
 
-          post :create, params: { secret: fixture_file_upload(file.path) }
+            post :create, params: { secret: fixture_file_upload(file.path) }
+          end
 
           expect(response).to have_http_status(:ok)
           expect(Rails.cache).to have_received(:write)
@@ -49,11 +51,12 @@ RSpec.describe(Api::V1::SecretsController) do
 
       context "when encrypted secret is too large" do
         it "returns a 413 (Payload Too Large)" do
-          file = Tempfile.new("encryped-secret")
-          file.write("a" * (max_size + 1))
-          file.close
+          Tempfile.create("encrypted-secret") do |file|
+            file.write("a" * (max_size + 1))
+            file.close
 
-          post :create, params: { secret: fixture_file_upload(file.path) }
+            post :create, params: { secret: fixture_file_upload(file.path) }
+          end
 
           expect(response).to have_http_status(:content_too_large)
           expect(response.body).to eq("Secret too large")
