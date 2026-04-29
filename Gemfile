@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby file: ".tool-versions"
 
 gem "pry"
-gem "puma", "~> 7.2"
+gem "puma", "~> 8.0"
 gem "rack-attack"
 gem "rails", "~> 8.1.1"
 gem "redis"
