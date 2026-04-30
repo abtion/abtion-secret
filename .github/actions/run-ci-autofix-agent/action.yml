@@ -1,0 +1,116 @@
+name: "Run CI Autofix Agent"
+description: "Invokes Claude Code with the standard ci-autofix-agent configuration for this repo"
+
+inputs:
+  prompt:
+    description: "Trigger-specific prompt for Claude"
+    required: true
+  max_turns:
+    description: "Maximum agent turns"
+    required: false
+    default: "60"
+  model:
+    description: "Claude model to use"
+    required: false
+    default: "claude-sonnet-4-6"
+  app_id:
+    description: "GitHub App ID"
+    required: true
+  app_private_key:
+    description: "GitHub App private key PEM"
+    required: true
+  anthropic_api_key:
+    description: "Anthropic API key"
+    required: true
+  bot_login:
+    description: "GitHub bot login (the App's [bot] username)"
+    required: false
+    default: "maintenance-agent[bot]"
+
+outputs:
+  total_cost:
+    description: "Anthropic API cost for this run"
+    value: ${{ steps.claude.outputs.total_cost }}
+  conclusion:
+    description: "success | failure | timeout"
+    value: ${{ steps.claude.outputs.conclusion }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ inputs.app_id }}
+        private-key: ${{ inputs.app_private_key }}
+
+    - name: Configure git identity
+      shell: bash
+      env:
+        BOT_LOGIN: ${{ inputs.bot_login }}
+        APP_ID: ${{ inputs.app_id }}
+      run: |
+        git config user.name "$BOT_LOGIN"
+        git config user.email "${APP_ID}+${BOT_LOGIN}@users.noreply.github.com"
+
+    - name: Run Claude Code
+      id: claude
+      uses: anthropics/claude-code-action@v1.0.108
+      with:
+        anthropic_api_key: ${{ inputs.anthropic_api_key }}
+        github_token: ${{ steps.app-token.outputs.token }}
+        allowed_bots: "dependabot[bot]"
+        prompt: ${{ inputs.prompt }}
+        claude_args: |
+          --model ${{ inputs.model }}
+          --max-turns ${{ inputs.max_turns }}
+          --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(bundle:*),Bash(bundler:*),Bash(rake:*),Bash(ruby:*),Bash(bin/rails:*),Bash(bin/rspec:*),Bash(bin/rubocop:*),Bash(bin/brakeman:*),Bash(bin/erb_lint:*),Bash(bin/prettier:*),Bash(bin/shakapacker:*),Bash(bin/setup:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(jq:*),Bash(ls:*),Bash(cat:*),Bash(find:*),Bash(mkdir:*),Bash(cp:*),Bash(mv:*),Bash(rm:*),Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(echo:*),Bash(sed:*),Bash(awk:*),Bash(sort:*),Bash(uniq:*),Bash(which:*),Bash(pwd:*),Bash(dirname:*),Bash(basename:*),Bash(grep:*),Bash(diff:*),Bash(test:*),Bash(env:*),Bash([:*),Bash(true:*),Bash(false:*),Bash(tr:*),Bash(xargs:*)"
+
+    - name: Report cost and permission denials
+      shell: bash
+      if: always()
+      run: |
+        output_file="/home/runner/work/_temp/claude-execution-output.json"
+        if [ ! -f "$output_file" ]; then
+          echo "No execution output found."
+          exit 0
+        fi
+
+        # File may be an array of events or a single result object
+        result=$(jq 'if type == "array" then map(select(.type == "result")) | last // last else . end' "$output_file")
+        cost=$(echo "$result"     | jq -r '.total_cost_usd // "unknown"')
+        turns=$(echo "$result"    | jq -r '.num_turns // "unknown"')
+        duration_s=$(echo "$result" | jq -r 'if .duration_ms then (.duration_ms / 1000 | floor) else "unknown" end')
+        denials=$(echo "$result"  | jq -r '.permission_denials_count // 0')
+        subtype=$(echo "$result"  | jq -r '.subtype // "unknown"')
+
+        echo "Cost:               \$${cost}"
+        echo "Turns:              ${turns}"
+        echo "Duration:           ${duration_s}s"
+        echo "Result:             ${subtype}"
+        echo "Permission denials: ${denials}"
+
+        if [ "$denials" -gt 0 ] 2>/dev/null; then
+          echo ""
+          echo "=== Denied tool calls ==="
+          # Scan the output array for permission_denied events
+          jq -r '
+            if type == "array" then
+              .[] | select(.type == "permission_denied" or .subtype == "permission_denied")
+              | "  \(.tool_name // .tool // "unknown"): \(.reason // .message // "no reason given")"
+            else
+              (.permission_denials // []) | .[]
+              | "  \(.tool // .tool_name // "unknown"): \(.reason // .message // "no reason given")"
+            end
+          ' "$output_file" 2>/dev/null || true
+          # Also check transcript file if present
+          transcript=$(ls /home/runner/work/_temp/claude-transcript-*.jsonl 2>/dev/null | head -1)
+          if [ -n "$transcript" ]; then
+            jq -r 'select(.type == "permission_denied") | "  \(.tool_name): \(.reason // "no reason given")"' \
+              "$transcript" 2>/dev/null || true
+          fi
+
+          echo ""
+          echo "Tip: add denied tools to --allowedTools in the composite action if they are safe."
+        fi
