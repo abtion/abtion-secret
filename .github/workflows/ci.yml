@@ -1,12 +1,25 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
+  # Gate every other job: if this PR is a draft, skip CI entirely.
+  # Pushes to main and non-draft PRs run normally.
+  guard:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Not a draft PR — running CI."
+
   rubocop:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -18,6 +31,7 @@ jobs:
       - name: Rubocop
         run: bin/rubocop --format github
   brakeman:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -29,6 +43,7 @@ jobs:
       - name: Brakeman
         run: bin/brakeman
   eslint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -42,6 +57,7 @@ jobs:
       - name: lint
         run: npm run lint
   stylelint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -55,6 +71,7 @@ jobs:
       - name: stylelint
         run: npx stylelint "app/javascript/**/*.scss"
   erb-lint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -66,6 +83,7 @@ jobs:
       - name: erb-lint
         run: bin/erb_lint --lint-all
   jest:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -85,6 +103,7 @@ jobs:
           name: jest_coverage
           path: coverage/js/lcov.info
   prettier:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -98,6 +117,7 @@ jobs:
       - name: prettier
         run: bin/prettier --check
   assets-precompile:
+    needs: guard
     runs-on: ubuntu-latest
 
     env:
@@ -129,6 +149,7 @@ jobs:
         run: bin/rails assets:precompile
 
   rspec:
+    needs: guard
     runs-on: ubuntu-latest
 
     env:
