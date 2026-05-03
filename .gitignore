@@ -36,5 +36,4 @@
 
 /coverage
 
-# CI autofix agent scratch directory — contains untrusted CI logs
 /.agent-context/

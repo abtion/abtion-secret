@@ -10,18 +10,16 @@ never sees the plaintext or the password.
 - Node 24.15, npm 11
 - React 19 (rendered via Shakapacker / webpack)
 - RSpec + Capybara (Ruby), Jest + Testing Library (JS)
-- Redis (encrypted-secret store)
-- Devise (admin authentication)
+- Redis (encrypted-secret store; no relational database)
 - Hosted on Heroku
 
 Versions are pinned in [.tool-versions](.tool-versions) and the Gemfile.
 
 ## Project layout
 
-- `app/` — Rails app (controllers, models, views, helpers, mailers)
+- `app/` — Rails app (controllers, helpers, views)
 - `app/javascript/` — React components, packs, SCSS
 - `config/` — Rails config and initializers
-- `db/migrate/` — schema migrations (never edit `db/schema.rb` by hand)
 - `lib/` — non-Rails Ruby code and rake tasks
 - `spec/` — RSpec tests (mirrors `app/` layout)
 - `bin/` — wrapper scripts (`rails`, `rspec`, `rubocop`, etc.)
@@ -65,8 +63,6 @@ These rules are non-negotiable. Violating any of them aborts the run.
   manifest (`Gemfile` / `package.json`) and let the package manager regenerate
   the lockfile if needed. For Dependabot PRs, fix the calling code, never
   downgrade the dependency.
-- **Never modify `db/schema.rb` by hand.** Add a migration in `db/migrate/`
-  and let Rails regenerate the schema.
 - **Never touch `.env`, `.env.*`, or any credential file.**
 - **Never modify `.github/workflows/*` or `.github/actions/*`.**
 - Make the **minimum** change required to fix CI. Do not refactor, rename,
