@@ -25,7 +25,7 @@ inputs:
   bot_login:
     description: "GitHub bot login (the App's [bot] username)"
     required: false
-    default: "maintenance-agent[bot]"
+    default: "claude-autofixing-agent[bot]"
 
 outputs:
   total_cost:

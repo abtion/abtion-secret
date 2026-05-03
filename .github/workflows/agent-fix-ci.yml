@@ -14,7 +14,7 @@ env:
   # Login of the GitHub App's bot user. Used by the precheck retry counter
   # and the stats-append comment lookup. If you rename or replace the App,
   # update this value and pass `bot_login` to the composite action below.
-  AGENT_BOT_LOGIN: maintenance-agent[bot]
+  AGENT_BOT_LOGIN: claude-autofixing-agent[bot]
   # CI jobs the agent is allowed to attempt to fix. Other jobs (assets
   # precompile, sonar/coverage upload, anything env-dependent) are skipped
   # so they don't burn API credit on unfixable failures.

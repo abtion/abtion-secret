@@ -1,6 +1,6 @@
 # CI Autofix Agent Conventions
 
-Applies to every commit and comment made by the CI autofix agent (`maintenance-agent[bot]`).
+Applies to every commit and comment made by the CI autofix agent (`claude-autofixing-agent[bot]`).
 
 ## Commit prefix (Conventional Commits)
 
