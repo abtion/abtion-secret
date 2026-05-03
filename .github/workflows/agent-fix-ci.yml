@@ -26,7 +26,9 @@ concurrency:
 
 jobs:
   precheck:
-    if: github.event.workflow_run.conclusion == 'failure'
+    if: |
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     outputs:
       enabled: ${{ steps.check.outputs.enabled }}
@@ -39,6 +41,8 @@ jobs:
       - id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          REPO: ${{ github.repository }}
         run: |
           if [ -f .github/MAINTENANCE_AGENT_DISABLED ]; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
@@ -47,8 +51,8 @@ jobs:
           fi
 
           # Skip if only unfixable jobs failed (e.g. sonar, assets-precompile).
-          failed_jobs=$(gh run view ${{ github.event.workflow_run.id }} \
-            --repo ${{ github.repository }} \
+          failed_jobs=$(gh run view "$WORKFLOW_RUN_ID" \
+            --repo "$REPO" \
             --json jobs \
             --jq '.jobs[] | select(.conclusion == "failure") | .name' 2>/dev/null || true)
           echo "Failed jobs:"
@@ -78,11 +82,13 @@ jobs:
 
   fix:
     needs: precheck
+    # Same-repo guard repeated here as defence-in-depth (precheck already
+    # enforces it; this protects against a job-level needs/if misconfiguration).
     if: |
       needs.precheck.outputs.enabled == 'true' &&
-      github.event.workflow_run.conclusion == 'failure'
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
-
     steps:
       - name: Generate App token
         id: app-token
@@ -142,10 +148,12 @@ jobs:
       - name: Download failed CI logs
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          REPO: ${{ github.repository }}
         run: |
           mkdir -p .agent-context
-          gh run view ${{ github.event.workflow_run.id }} \
-            --repo ${{ github.repository }} \
+          gh run view "$WORKFLOW_RUN_ID" \
+            --repo "$REPO" \
             --log-failed > .agent-context/failed-logs.txt 2>/dev/null || true
           # Keep the LAST 200 KB — CI failures are at the tail of the log,
           # after all the setup/install output.
@@ -157,13 +165,15 @@ jobs:
         if: steps.ctx.outputs.pr_number != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ steps.ctx.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+          AGENT_RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          agent_run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          gh pr comment "${{ steps.ctx.outputs.pr_number }}" \
-            --repo ${{ github.repository }} \
-            --body "Agent is analyzing the CI failure and working on a fix. [View run](${agent_run})"
-          gh pr merge --disable-auto "${{ steps.ctx.outputs.pr_number }}" \
-            --repo ${{ github.repository }} 2>/dev/null || true
+          gh pr comment "$PR_NUMBER" \
+            --repo "$REPO" \
+            --body "Agent is analyzing the CI failure and working on a fix. [View run]($AGENT_RUN)"
+          gh pr merge --disable-auto "$PR_NUMBER" \
+            --repo "$REPO" 2>/dev/null || true
 
       - name: Run agent
         uses: ./.github/actions/run-ci-autofix-agent
@@ -172,7 +182,7 @@ jobs:
           app_private_key: ${{ secrets.AUTOFIX_PRIVATE_KEY }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           bot_login: ${{ env.AGENT_BOT_LOGIN }}
-          max_turns: '60'
+          max_turns: "60"
           prompt: |
             CI failed. Diagnose the failure and fix it.
 
@@ -230,6 +240,9 @@ jobs:
         if: always() && steps.ctx.outputs.pr_number != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ steps.ctx.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+          AGENT_RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           output_file="/home/runner/work/_temp/claude-execution-output.json"
           [ -f "$output_file" ] || exit 0
@@ -239,27 +252,23 @@ jobs:
           turns=$(echo "$result"    | jq -r '.num_turns // "?"')
           [ -z "$raw_cost" ] && exit 0
           cost=$(printf "%.3f" "$raw_cost")
-          agent_run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-          pr="${{ steps.ctx.outputs.pr_number }}"
-          repo="${{ github.repository }}"
 
           # Find the latest comment posted by the bot on this PR
-          comment_id=$(gh api "repos/${repo}/issues/${pr}/comments" \
+          comment_id=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" \
             --jq "[.[] | select(.user.login == \"${AGENT_BOT_LOGIN}\")] | last | .id // empty")
 
           if [ -z "$comment_id" ]; then
-            echo "No agent comment found on PR #${pr}; skipping stats append."
+            echo "No agent comment found on PR #${PR_NUMBER}; skipping stats append."
             exit 0
           fi
 
-          current_body=$(gh api "repos/${repo}/issues/comments/${comment_id}" --jq '.body')
+          current_body=$(gh api "repos/${REPO}/issues/comments/${comment_id}" --jq '.body')
 
           new_body=$(printf '%s\nCost: $%s\nTurns: %s\n\nAgent run log: %s' \
-            "$current_body" "$cost" "$turns" "$agent_run")
+            "$current_body" "$cost" "$turns" "$AGENT_RUN")
 
-          gh api "repos/${repo}/issues/comments/${comment_id}" \
+          gh api "repos/${REPO}/issues/comments/${comment_id}" \
             -X PATCH \
             -f body="$new_body"
 
-          echo "Appended stats to comment ${comment_id} on PR #${pr}."
+          echo "Appended stats to comment ${comment_id} on PR #${PR_NUMBER}."
