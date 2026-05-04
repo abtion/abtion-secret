@@ -15,22 +15,23 @@ Applies to every commit and comment made by the CI autofix agent (`claude-autofi
 | Security advisory fix | `security(deps):` |
 | Flaky spec stabilisation | `chore(test):` |
 
-## PR comment format
+## Final response format
 
-After pushing a fix, post a comment on the PR with this structure:
+The workflow updates a single PR comment per run with the agent's outcome.
+To make that comment useful, conclude your final response with a one-line
+summary of what was broken and what was fixed. Example:
 
 ```
-Agent fix · <one-line summary of what was broken and what was fixed>
-
-Verified: <only the checks you actually re-ran, e.g. rubocop ✅ rspec ✅>
+Updated FooSerializer to use ActiveRecord 7.2's new query syntax after the rails patch bump.
 ```
 
-Only list the checks you actually re-ran locally to validate the fix. Do NOT
-include cost, turns, or the agent run link — those are appended automatically
-after you finish.
+Do NOT post a PR comment yourself, do NOT include cost/turns/run-link
+(the workflow appends those), and do NOT include "Verified: …" — the
+workflow already verifies via the failing CI re-run.
 
 ## What agents must NOT do
 
+- Post PR comments (the workflow owns the status comment)
 - Modify `.github/workflows/*`
 - Edit `Gemfile.lock` or `package-lock.json` directly (let bundler / npm
   regenerate them via the corresponding manifest change)

@@ -11,13 +11,9 @@ permissions:
   issues: write
 
 env:
-  # Login of the GitHub App's bot user. Used by the precheck retry counter
-  # and the stats-append comment lookup. If you rename or replace the App,
-  # update this value and pass `bot_login` to the composite action below.
   AGENT_BOT_LOGIN: claude-autofixing-agent[bot]
-  # CI jobs the agent is allowed to attempt to fix. Other jobs (assets
-  # precompile, sonar/coverage upload, anything env-dependent) are skipped
-  # so they don't burn API credit on unfixable failures.
+  # Other CI jobs (assets-precompile, sonar) are env-dependent or unfixable
+  # by code change, so the agent shouldn't burn API credit on them.
   FIXABLE_CI_JOBS: rubocop|brakeman|eslint|stylelint|erb-lint|jest|prettier|rspec
 
 concurrency:
@@ -46,44 +42,39 @@ jobs:
         run: |
           if [ -f .github/MAINTENANCE_AGENT_DISABLED ]; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "Maintenance agent disabled via kill-switch file."
+            echo "Autofix agent disabled via kill-switch file."
             exit 0
           fi
 
-          # Skip if only unfixable jobs failed (e.g. sonar, assets-precompile).
           failed_jobs=$(gh run view "$WORKFLOW_RUN_ID" \
             --repo "$REPO" \
             --json jobs \
             --jq '.jobs[] | select(.conclusion == "failure") | .name' 2>/dev/null || true)
           echo "Failed jobs:"
           echo "$failed_jobs"
-          fixable=$(echo "$failed_jobs" | grep -E "^(${FIXABLE_CI_JOBS})$" || true)
-          if [ -z "$fixable" ]; then
+          if ! echo "$failed_jobs" | grep -qE "^(${FIXABLE_CI_JOBS})$"; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "No fixable jobs failed (only unfixable jobs like sonar/assets-precompile); skipping."
+            echo "No fixable jobs failed; skipping."
             exit 0
           fi
 
           count=0
           while IFS= read -r name; do
-            if [ "$name" = "$AGENT_BOT_LOGIN" ]; then
-              count=$((count + 1))
-            else
-              break
-            fi
+            [ "$name" = "$AGENT_BOT_LOGIN" ] || break
+            count=$((count + 1))
           done < <(git log --format="%an")
           echo "Consecutive agent commits at HEAD: ${count}"
           if [ "$count" -ge 3 ]; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "Max retries reached (${count}/3); skipping agent run."
+            echo "Max retries reached (${count}/3); skipping."
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
 
   fix:
     needs: precheck
-    # Same-repo guard repeated here as defence-in-depth (precheck already
-    # enforces it; this protects against a job-level needs/if misconfiguration).
+    # Same-repo guard repeated as defence-in-depth — workflow_run holds
+    # secrets, and we must never check out fork code under that scope.
     if: |
       needs.precheck.outputs.enabled == 'true' &&
       github.event.workflow_run.conclusion == 'failure' &&
@@ -99,18 +90,16 @@ jobs:
 
       - name: Resolve context
         id: ctx
+        # workflow_run fields go through env to defuse shell-injection
+        # via attacker-controlled branch names (CodeQL: actions/code-injection).
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           REPO: ${{ github.repository }}
         run: |
-          # Always look up the PR — the failing CI workflow may run on `push`
-          # (e.g. Dependabot pushes a branch and CI is triggered by push, not
-          # pull_request), but the branch may still have an open PR we want to
-          # comment on and disable auto-merge for.
-
-          # Try commits API first; fall back to branch-name lookup.
+          # workflow_run can fire on a `push`-triggered CI; we still want the
+          # PR (if any) so we can comment and disable auto-merge.
           pr_number=$(gh api \
             "/repos/${REPO}/commits/${HEAD_SHA}/pulls" \
             --jq '.[0].number // empty' 2>/dev/null || true)
@@ -155,13 +144,13 @@ jobs:
           gh run view "$WORKFLOW_RUN_ID" \
             --repo "$REPO" \
             --log-failed > .agent-context/failed-logs.txt 2>/dev/null || true
-          # Keep the LAST 200 KB — CI failures are at the tail of the log,
-          # after all the setup/install output.
+          # Failures are at the tail, so trim to the last 200 KB.
           tail -c 200000 .agent-context/failed-logs.txt > .agent-context/failed-logs.trimmed.txt
           mv .agent-context/failed-logs.trimmed.txt .agent-context/failed-logs.txt
           echo "Log size: $(wc -c < .agent-context/failed-logs.txt) bytes"
 
       - name: Post start comment and disable auto-merge
+        id: start-comment
         if: steps.ctx.outputs.pr_number != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -169,13 +158,19 @@ jobs:
           REPO: ${{ github.repository }}
           AGENT_RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh pr comment "$PR_NUMBER" \
-            --repo "$REPO" \
-            --body "Agent is analyzing the CI failure and working on a fix. [View run]($AGENT_RUN)"
+          body="🔄 Agent is analyzing the CI failure. [View run](${AGENT_RUN})"
+          comment_id=$(gh api -X POST "repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            -f body="$body" --jq '.id')
+          echo "id=${comment_id}" >> "$GITHUB_OUTPUT"
+
           gh pr merge --disable-auto "$PR_NUMBER" \
             --repo "$REPO" 2>/dev/null || true
 
       - name: Run agent
+        id: run-agent
+        # Don't fail the job here — the next step needs to update the PR
+        # comment with the failure reason before the job is marked failed.
+        continue-on-error: true
         uses: ./.github/actions/run-ci-autofix-agent
         with:
           app_id: ${{ secrets.AUTOFIX_APP_ID }}
@@ -231,44 +226,78 @@ jobs:
             2. Run exactly: git push origin HEAD
                - If push fails for ANY reason: output {"status": "unable", "reason": "push failed: <stderr>"}
                  and STOP. Do NOT retry. Do NOT use --force or any force variant.
-            3. If PR number is set, post a comment on PR #${{ steps.ctx.outputs.pr_number }}
-               with a one-line summary of what was broken and what was fixed.
+            3. Conclude your final response with a one-line summary of what
+               was broken and what was fixed. The workflow will include this
+               in the PR comment — do NOT post a PR comment yourself.
 
             Follow .github/AGENT_CONVENTIONS.md for commit message prefixes.
 
-      - name: Append run stats to agent comment
-        if: always() && steps.ctx.outputs.pr_number != ''
+      - name: Update start comment with outcome
+        # Target only the workflow-owned start comment created in this run.
+        # Multiple agent runs on a single PR each maintain their own status
+        # comment, so the timeline stays readable.
+        if: always() && steps.start-comment.outputs.id != ''
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_NUMBER: ${{ steps.ctx.outputs.pr_number }}
           REPO: ${{ github.repository }}
           AGENT_RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          AGENT_OUTCOME: ${{ steps.run-agent.outcome }}
+          COMMENT_ID: ${{ steps.start-comment.outputs.id }}
         run: |
           output_file="/home/runner/work/_temp/claude-execution-output.json"
-          [ -f "$output_file" ] || exit 0
 
-          result=$(jq 'if type == "array" then map(select(.type == "result")) | last // last else . end' "$output_file")
-          raw_cost=$(echo "$result" | jq -r '.total_cost_usd // empty')
-          turns=$(echo "$result"    | jq -r '.num_turns // "?"')
-          [ -z "$raw_cost" ] && exit 0
-          cost=$(printf "%.3f" "$raw_cost")
-
-          # Find the latest comment posted by the bot on this PR
-          comment_id=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            --jq "[.[] | select(.user.login == \"${AGENT_BOT_LOGIN}\")] | last | .id // empty")
-
-          if [ -z "$comment_id" ]; then
-            echo "No agent comment found on PR #${PR_NUMBER}; skipping stats append."
-            exit 0
+          cost=""
+          turns=""
+          subtype=""
+          is_error="false"
+          agent_summary=""
+          if [ -f "$output_file" ]; then
+            result=$(jq 'if type == "array" then map(select(.type == "result")) | last // last else . end' "$output_file")
+            raw_cost=$(echo "$result" | jq -r '.total_cost_usd // empty')
+            turns=$(echo "$result"    | jq -r '.num_turns // "?"')
+            subtype=$(echo "$result"  | jq -r '.subtype // ""')
+            is_error=$(echo "$result" | jq -r '.is_error // false')
+            agent_summary=$(echo "$result" | jq -r '.result // ""')
+            [ -n "$raw_cost" ] && cost=$(printf "%.3f" "$raw_cost")
           fi
 
-          current_body=$(gh api "repos/${REPO}/issues/comments/${comment_id}" --jq '.body')
+          stats_footer=""
+          [ -n "$cost" ] && stats_footer=$(printf '\n\nCost: $%s · Turns: %s' "$cost" "$turns")
 
-          new_body=$(printf '%s\nCost: $%s\nTurns: %s\n\nAgent run log: %s' \
-            "$current_body" "$cost" "$turns" "$AGENT_RUN")
+          if [ "$AGENT_OUTCOME" = "success" ] && [ "$is_error" != "true" ]; then
+            if [ -n "$agent_summary" ]; then
+              new_body=$(printf '✅ **Agent fixed the CI failure.**\n\n%s%s\n\n[View run](%s)' \
+                "$agent_summary" "$stats_footer" "$AGENT_RUN")
+            else
+              new_body=$(printf '✅ **Agent fixed the CI failure.**%s\n\n[View run](%s)' \
+                "$stats_footer" "$AGENT_RUN")
+            fi
+          else
+            case "$subtype" in
+              error_max_turns)
+                detail="reached the max turn limit (${turns} turns) before fixing the issue."
+                ;;
+              error_during_execution)
+                detail="hit an internal error during execution. See the run log for details."
+                ;;
+              "")
+                detail="could not start — the workflow failed before the agent ran. See the run log for details."
+                ;;
+              *)
+                detail="did not complete successfully (subtype: \`${subtype}\`). See the run log for details."
+                ;;
+            esac
+            new_body=$(printf '⚠️ **Agent could not fix this CI failure.**\n\nThe agent %s%s\n\n[View run](%s)' \
+              "$detail" "$stats_footer" "$AGENT_RUN")
+          fi
 
-          gh api "repos/${REPO}/issues/comments/${comment_id}" \
+          gh api "repos/${REPO}/issues/comments/${COMMENT_ID}" \
             -X PATCH \
             -f body="$new_body"
+          echo "Updated comment ${COMMENT_ID} (outcome: ${AGENT_OUTCOME})."
 
-          echo "Appended stats to comment ${comment_id} on PR #${PR_NUMBER}."
+      - name: Propagate agent failure to job status
+        if: steps.run-agent.outcome != 'success'
+        run: |
+          echo "Agent step outcome: ${{ steps.run-agent.outcome }}"
+          exit 1
