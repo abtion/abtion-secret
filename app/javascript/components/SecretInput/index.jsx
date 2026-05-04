@@ -8,3 +8,8 @@ export default function SecretInput(props) {
       <AutosizedTextarea
         name="secret"
         className="SecretInput__textarea"
+        {...props}
+      ></AutosizedTextarea>
+    </div>
+  )
+}
