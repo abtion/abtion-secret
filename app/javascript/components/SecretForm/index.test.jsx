@@ -44,7 +44,7 @@ describe(SecretForm, () => {
     })
 
     expect(onSecretStored).toHaveBeenCalledWith({
-      secret: "The secret",
+      secret: "Secrets",
       keyPass: expect.any(String),
     })
   })
