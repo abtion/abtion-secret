@@ -17,8 +17,8 @@ env:
   FIXABLE_CI_JOBS: rubocop|brakeman|eslint|stylelint|erb-lint|jest|prettier|rspec
 
 concurrency:
-  group: agent-fix-ci-${{ github.event.workflow_run.head_sha }}
-  cancel-in-progress: false
+  group: agent-fix-ci-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
 
 jobs:
   precheck:
