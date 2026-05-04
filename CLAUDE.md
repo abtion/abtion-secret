@@ -68,6 +68,27 @@ These rules are non-negotiable. Violating any of them aborts the run.
 - Make the **minimum** change required to fix CI. Do not refactor, rename,
   upgrade dependencies, or "clean up" surrounding code.
 
+## Rails major-version upgrades
+
+Whenever the Rails major version is being updated (e.g. 7.x → 8.x) — by
+Dependabot, a human, or an agent, and regardless of whether CI is currently
+failing — strictly follow the official Rails upgrading guide:
+
+  https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
+
+This applies equally to bumps of the meta `rails` gem and to bumps of any
+sub-gem that crosses a Rails major version (`activerecord`, `actionpack`,
+`activesupport`, `actionview`, `actionmailer`, `activejob`, `activestorage`,
+`actioncable`, `actiontext`, `railties`).
+
+Apply only the steps relevant to the source → target version range. Do not
+skip framework-defaults updates, deprecated-API removals, or
+`bin/rails app:update` actions the guide lists for that range. If a step
+requires human review (e.g. config changes that alter app behaviour), an
+agent should bail out with
+`{"status": "unable", "reason": "rails upgrade requires human review: <step>"}`
+and stop.
+
 ## Conventions
 
 - Commit prefixes and PR comment format: see
