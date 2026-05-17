@@ -54,11 +54,21 @@ Local dev: `bin/rails s` (server), `bin/setup` (initial install).
 These rules are non-negotiable. Violating any of them aborts the run.
 
 - **Never force-push** (`git push --force`, `--force-with-lease`, or any variant).
-- **Never create a new branch.** Push directly to the failing branch.
+- **Never create a new branch.** Commit directly to the failing branch.
 - **Never open or merge a PR.**
-- **If `git push origin HEAD` fails for any reason, STOP.** Do not retry, do
-  not rebase, do not force. Output `{"status": "unable", "reason": "push
-  failed: <stderr>"}` and exit.
+- **When running as the CI autofix agent, always commit via the helper script:**
+  ```
+  bash .github/scripts/agent-commit.sh "<prefixed commit message>"
+  ```
+  This script is **not committed to the repository**. It is installed into
+  `.github/scripts/` at runtime by the `abtion/ci-autofix-agent/run-agent`
+  action before Claude starts, so it will be present in CI but **will not
+  exist if you are running Claude locally**. It creates a GitHub-signed
+  (Verified) commit via the API. Do NOT run `git commit` or `git push`
+  directly when in CI. If the helper exits non-zero for ANY reason: output
+  `{"status": "unable", "reason": "commit failed: <stderr>"}` and STOP.
+  Do NOT retry.
+- **When running Claude locally**, do not commit unless the user explicitly asks you to.
 - **Never edit `Gemfile.lock` or `package-lock.json` directly.** Change the
   manifest (`Gemfile` / `package.json`) and let the package manager regenerate
   the lockfile if needed. For Dependabot PRs, fix the calling code, never
