@@ -24,7 +24,7 @@ RSpec.describe(Api::V1::SecretsController) do
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq(fresh_key)
         expect(SecureRandom).to have_received(:urlsafe_base64).twice
-        expect(Rails.cache.read("secret-wrongkey-#{colliding_key}")).to eq("occupant")
+        expect(Rails.cache.read("secret-#{colliding_key}")).to eq("occupant")
       end
     end
 
