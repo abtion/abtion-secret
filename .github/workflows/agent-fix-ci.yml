@@ -37,7 +37,7 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
-      - uses: abtion/ci-autofix-agent/precheck@v1
+      - uses: abtion/ci-autofix-agent/precheck@main
         id: precheck
         with:
           bot_name: ${{ env.AGENT_BOT_NAME }}
@@ -74,7 +74,7 @@ jobs:
       - run: npm ci
 
       - name: Run CI autofix agent
-        uses: abtion/ci-autofix-agent/run-agent@v1
+        uses: abtion/ci-autofix-agent/run-agent@main
         with:
           app_id: ${{ secrets.AUTOFIX_APP_ID }}
           app_private_key: ${{ secrets.AUTOFIX_PRIVATE_KEY }}
