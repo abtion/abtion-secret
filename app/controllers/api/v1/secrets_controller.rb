@@ -8,7 +8,8 @@ module Api
       RESPONSE_TIME = ENV.fetch("API_RESPONSE_TIME_SECONDS").to_f
       KEY_LENGTH = ENV.fetch("KEY_LENGTH").to_i
       MAX_ENCRYPTED_SECRET_SIZE = ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i
-      SECRET_LIFETIME_SECONDS = ENV.fetch("SECRET_LIFETIME_HOURS").to_i * 1 * 3600
+      MAX_SECRET_LIFETIME_DAYS = ENV.fetch("MAX_SECRET_LIFETIME_DAYS").to_i
+      DEFAULT_SECRET_LIFETIME_DAYS = 1
 
       def show
         ensure_response_time(RESPONSE_TIME) do
@@ -22,20 +23,37 @@ module Api
 
       def create
         ensure_response_time(RESPONSE_TIME) do
-          if params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
+          if oversized_secret?
             render plain: "Secret too large", layout: false, status: :content_too_large
-            return
+          elsif invalid_lifetime?
+            render plain: "Invalid lifetime", layout: false, status: :unprocessable_content
+          else
+            store_secret_and_render_key
           end
-
-          key = unused_key
-          Rails.cache.write(prefixed_key(key),
-                            params[:secret].read, expires_in: SECRET_LIFETIME_SECONDS)
-
-          render json: key.to_json
         end
       end
 
       private
+
+      def oversized_secret?
+        params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
+      end
+
+      def invalid_lifetime?
+        !lifetime_days.between?(1, MAX_SECRET_LIFETIME_DAYS)
+      end
+
+      def lifetime_days
+        @lifetime_days ||=
+          (params[:lifetime_days].presence || DEFAULT_SECRET_LIFETIME_DAYS).to_i
+      end
+
+      def store_secret_and_render_key
+        key = unused_key
+        Rails.cache.write(prefixed_key(key),
+                          params[:secret].read, expires_in: lifetime_days * 24 * 3600)
+        render json: key.to_json
+      end
 
       def unused_key
         key = nil
