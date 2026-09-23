@@ -111,6 +111,10 @@ If for some reason you don't want one of the hooks (push/commit) you can specify
 
 The hooks are symlinked meaning all the changes to the repo hooks will automatically be updated in all local environments, in the case of a change.
 
+### Custom Docker Ports
+
+Docker services bind to default ports (Redis 6379). To use custom host ports (e.g. to run multiple projects simultaneously), set `REDIS_PORT` in `.env.local` and make sure it's exported before running `docker compose`.
+
 ## Day-to-day
 
 - Run the server: `bin/rails s` and [http://localhost:3000](http://localhost:3000)
