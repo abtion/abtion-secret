@@ -5,14 +5,27 @@ import encryptSecret from "../../utils/encryptSecret"
 
 import SecretInput from "../SecretInput"
 import Button from "../Button"
+import InlineSelect from "../InlineSelect"
 
 const passwordLength = parseInt(process.env.PASSWORD_LENGTH)
 const maxSecretChars = parseInt(process.env.MAX_SECRET_CHARS)
+const maxLifetimeDays = parseInt(process.env.MAX_SECRET_LIFETIME_DAYS)
+
+const lifetimePresets = [1, 3, 7, 14, 30]
+const lifetimeOptions = lifetimePresets
+  .filter((days) => days <= maxLifetimeDays)
+  .map((days) => ({
+    value: days,
+    label: days === 1 ? "1 day" : `${days} days`,
+  }))
 
 export default function SecretForm({ onSecretStored, secret: initialSecret }) {
   const [secret, setSecret] = useState(initialSecret)
+  const [lifetimeDays, setLifetimeDays] = useState(lifetimeOptions[0].value)
 
   const handleSecretChange = (event) => setSecret(event.currentTarget.value)
+  const handleLifetimeChange = (event) =>
+    setLifetimeDays(parseInt(event.currentTarget.value))
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -24,6 +37,7 @@ export default function SecretForm({ onSecretStored, secret: initialSecret }) {
 
     const formData = new FormData()
     formData.append("secret", secretBlob)
+    formData.append("lifetime_days", lifetimeDays)
 
     const response = await fetch("/api/secrets", {
       method: "POST",
@@ -41,9 +55,18 @@ export default function SecretForm({ onSecretStored, secret: initialSecret }) {
     <>
       <h1>Share your secret</h1>
 
-      <p>Your secure link lasts for 24 hours, and can only be used once</p>
-
       <form onSubmit={handleSubmit}>
+        <p>
+          Your secure link lasts for{" "}
+          <InlineSelect
+            name="lifetime_days"
+            value={lifetimeDays}
+            onChange={handleLifetimeChange}
+            aria-label="Link lifetime"
+            options={lifetimeOptions}
+          />
+          , and can only be used once
+        </p>
         <SecretInput
           autoFocus
           value={secret}
