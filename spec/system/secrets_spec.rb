@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Secrets" do
+  include ActiveSupport::Testing::TimeHelpers
+
   it "allows storing and fetching a secret" do # rubocop:disable RSpec/MultipleExpectations
     stub_const("Api::V1::SecretsController::RESPONSE_TIME", 2)
 
@@ -65,6 +67,33 @@ RSpec.describe "Secrets" do
 
       expect(page).to have_text("Your secret is gone...")
       expect(page).to have_button("Share a secret")
+    end
+  end
+
+  context "when picking a longer link lifetime" do
+    it "reflects the chosen duration in the description" do
+      visit root_path
+
+      select "7 days", from: "lifetime_days", visible: false
+
+      expect(page).to have_text("Your secure link lasts for 7 days")
+    end
+
+    it "is still readable several days later" do
+      visit root_path
+
+      select "7 days", from: "lifetime_days", visible: false
+      fill_in "secret", with: "this is a secret"
+      click_on "Create link"
+
+      secret_url = page.find("input[readOnly]").value
+
+      travel 6.days do
+        visit secret_url
+        click_on "Show me the secret"
+
+        expect(page).to have_field(name: "secret", with: "this is a secret")
+      end
     end
   end
 
