@@ -1,0 +1,85 @@
+name: Agent — Fix CI
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+env:
+  AGENT_BOT_NAME: "claude-autofixing-agent"
+  # assets-precompile and coverage_and_sonar are env-dependent or unfixable by
+  # code change, so the agent shouldn't burn API credit on them.
+  FIXABLE_CI_JOBS: "rubocop|brakeman|eslint|stylelint|erb-lint|jest|prettier|rspec"
+  MAX_TURNS: "60"
+  MODEL: "claude-sonnet-4-6"
+  EXTRA_ALLOWED_TOOLS: "Bash(bundle:*),Bash(bundler:*),Bash(ruby:*),Bash(bin/rails:*),Bash(bin/rspec:*),Bash(bin/rubocop:*),Bash(bin/brakeman:*),Bash(bin/erb_lint:*),Bash(bin/prettier:*),Bash(bin/shakapacker:*),Bash(npm:*),Bash(npx:*),Bash(node:*)"
+
+concurrency:
+  group: agent-fix-ci-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  precheck:
+    if: |
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.precheck.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+      - uses: abtion/ci-autofix-agent/precheck@main
+        id: precheck
+        with:
+          bot_name: ${{ env.AGENT_BOT_NAME }}
+          fixable_jobs: ${{ env.FIXABLE_CI_JOBS }}
+          workflow_run_id: ${{ github.event.workflow_run.id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+
+  fix:
+    needs: precheck
+    if: |
+      needs.precheck.outputs.enabled == 'true' &&
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Run CI autofix agent
+        uses: abtion/ci-autofix-agent/run-agent@main
+        with:
+          app_id: ${{ secrets.AUTOFIX_APP_ID }}
+          app_private_key: ${{ secrets.AUTOFIX_PRIVATE_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          bot_name: ${{ env.AGENT_BOT_NAME }}
+          max_turns: ${{ env.MAX_TURNS }}
+          model: ${{ env.MODEL }}
+          allowed_tools: ${{ env.EXTRA_ALLOWED_TOOLS }}

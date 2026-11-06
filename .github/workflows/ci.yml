@@ -1,16 +1,29 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
+  # Gate every other job: if this PR is a draft, skip CI entirely.
+  # Pushes to main and non-draft PRs run normally.
+  guard:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Not a draft PR — running CI."
+
   rubocop:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -18,10 +31,11 @@ jobs:
       - name: Rubocop
         run: bin/rubocop --format github
   brakeman:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -29,11 +43,12 @@ jobs:
       - name: Brakeman
         run: bin/brakeman
   eslint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -42,11 +57,12 @@ jobs:
       - name: lint
         run: npm run lint
   stylelint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -55,10 +71,11 @@ jobs:
       - name: stylelint
         run: npx stylelint "app/javascript/**/*.scss"
   erb-lint:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -66,11 +83,12 @@ jobs:
       - name: erb-lint
         run: bin/erb_lint --lint-all
   jest:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -85,11 +103,12 @@ jobs:
           name: jest_coverage
           path: coverage/js/lcov.info
   prettier:
+    needs: guard
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -98,6 +117,7 @@ jobs:
       - name: prettier
         run: bin/prettier --check
   assets-precompile:
+    needs: guard
     runs-on: ubuntu-latest
 
     env:
@@ -108,14 +128,14 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - name: install required apt packages
         run: sudo apt-get -y install libpq-dev
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -129,6 +149,7 @@ jobs:
         run: bin/rails assets:precompile
 
   rspec:
+    needs: guard
     runs-on: ubuntu-latest
 
     env:
@@ -136,12 +157,12 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
@@ -173,7 +194,7 @@ jobs:
     if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v8
@@ -184,7 +205,7 @@ jobs:
           mkdir -p coverage coverage/js
           [ -f coverage-artifacts/rspec_coverage/coverage.json ] && cp coverage-artifacts/rspec_coverage/coverage.json coverage/coverage.json || true
           [ -f coverage-artifacts/jest_coverage/lcov.info ] && cp coverage-artifacts/jest_coverage/lcov.info coverage/js/lcov.info || true
-      - uses: SonarSource/sonarqube-scan-action@v7
+      - uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

@@ -44,9 +44,12 @@ Since the password is in the hash-part of the URL it is never sent to the server
 
 You must have the following installed and available on your machine:
 
-- **Ruby 2.7.x**
-- **Node JS 18.x**
+- **Ruby 3.4.x**
+- **Node JS 24.x**
 - **Redis**
+
+Versions are pinned in [`.tool-versions`](.tool-versions); using
+[asdf](https://asdf-vm.com/) (or any compatible version manager) is recommended.
 
 # Developing
 
@@ -125,7 +128,6 @@ The hooks are symlinked meaning all the changes to the repo hooks will automatic
 
 Inclusions:
 
-- [Devise](#devise-user-authorization)
 - Shakapacker
 - Jest
 - Prettier for linting javascript files
