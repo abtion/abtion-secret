@@ -28,6 +28,15 @@ RSpec.describe(Api::V1::SecretsController) do
       end
     end
 
+    describe "missing secret" do
+      it "returns a 400 (Bad Request)" do
+        post :create
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq("Secret missing")
+      end
+    end
+
     describe "file size limit" do
       let(:max_size) { ENV.fetch("MAX_ENCRYPTED_SECRET_SIZE").to_i }
 
@@ -84,7 +93,7 @@ RSpec.describe(Api::V1::SecretsController) do
 
           expect(response).to have_http_status(:ok)
           expect(Rails.cache).to have_received(:write).with(
-            anything, anything, expires_in: 1 * 24 * 3600
+            anything, anything, expires_in: 1.day
           )
         end
       end
@@ -98,7 +107,7 @@ RSpec.describe(Api::V1::SecretsController) do
 
           expect(response).to have_http_status(:ok)
           expect(Rails.cache).to have_received(:write).with(
-            anything, anything, expires_in: 7 * 24 * 3600
+            anything, anything, expires_in: 7.days
           )
         end
       end
@@ -147,7 +156,7 @@ RSpec.describe(Api::V1::SecretsController) do
     describe "secret lifetime" do
       include ActiveSupport::Testing::TimeHelpers
 
-      let(:lifetime_seconds) { Api::V1::SecretsController::SECRET_LIFETIME_SECONDS }
+      let(:lifetime_seconds) { Api::V1::SecretsController::DEFAULT_SECRET_LIFETIME_DAYS.days }
       let(:key) { "test-key" }
       let(:payload) { "encrypted-payload-bytes" }
 

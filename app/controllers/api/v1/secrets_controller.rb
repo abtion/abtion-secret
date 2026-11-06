@@ -22,18 +22,22 @@ module Api
       end
 
       def create
-        ensure_response_time(RESPONSE_TIME) do
-          if oversized_secret?
-            render plain: "Secret too large", layout: false, status: :content_too_large
-          elsif invalid_lifetime?
-            render plain: "Invalid lifetime", layout: false, status: :unprocessable_content
-          else
-            store_secret_and_render_key
-          end
-        end
+        ensure_response_time(RESPONSE_TIME) { handle_create }
       end
 
       private
+
+      def handle_create
+        if params[:secret].blank?
+          render plain: "Secret missing", layout: false, status: :bad_request
+        elsif oversized_secret?
+          render plain: "Secret too large", layout: false, status: :content_too_large
+        elsif invalid_lifetime?
+          render plain: "Invalid lifetime", layout: false, status: :unprocessable_content
+        else
+          store_secret_and_render_key
+        end
+      end
 
       def oversized_secret?
         params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
@@ -51,7 +55,7 @@ module Api
       def store_secret_and_render_key
         key = unused_key
         Rails.cache.write(prefixed_key(key),
-                          params[:secret].read, expires_in: lifetime_days * 24 * 3600)
+                          params[:secret].read, expires_in: lifetime_days.days)
         render json: key.to_json
       end
 

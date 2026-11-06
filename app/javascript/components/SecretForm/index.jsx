@@ -9,7 +9,7 @@ import InlineSelect from "../InlineSelect"
 
 const passwordLength = parseInt(process.env.PASSWORD_LENGTH)
 const maxSecretChars = parseInt(process.env.MAX_SECRET_CHARS)
-const maxLifetimeDays = parseInt(process.env.MAX_SECRET_LIFETIME_DAYS)
+const maxLifetimeDays = parseInt(process.env.MAX_SECRET_LIFETIME_DAYS) || 30
 
 const lifetimePresets = [1, 3, 7, 14, 30]
 const lifetimeOptions = lifetimePresets
