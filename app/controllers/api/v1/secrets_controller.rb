@@ -22,14 +22,14 @@ module Api
 
       def create
         ensure_response_time(RESPONSE_TIME) do
-          if params[:secret].size > MAX_ENCRYPTED_SECRET_SIZE
+          if params.expect(:secret).size > MAX_ENCRYPTED_SECRET_SIZE
             render plain: "Secret too large", layout: false, status: :content_too_large
             return
           end
 
           key = unused_key
           Rails.cache.write(prefixed_key(key),
-                            params[:secret].read, expires_in: SECRET_LIFETIME_SECONDS)
+                            params.expect(:secret).read, expires_in: SECRET_LIFETIME_SECONDS)
 
           render json: key.to_json
         end
