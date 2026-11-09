@@ -18,7 +18,7 @@ group :development, :test do
   gem "byebug", platforms: [:mri, :windows]
   gem "dotenv-rails"
   gem "erb_lint", require: false
-  gem "rspec-rails", "~> 8.0"
+  gem "rspec-rails", "~> 8.1"
   gem "rubocop"
   gem "rubocop-performance"
   gem "rubocop-rails"
