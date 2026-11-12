@@ -44,7 +44,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.10.0",
     "stylelint": "^17.11.0",
     "stylelint-config-sass-guidelines": "^13.0.0",
     "webpack-dev-server": "^6.0.0"
