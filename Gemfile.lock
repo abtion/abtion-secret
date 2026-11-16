@@ -182,7 +182,7 @@ GEM
       method_source (~> 1.0)
       reline (>= 0.6.0)
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.0.3)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
@@ -362,7 +362,7 @@ DEPENDENCIES
   web-console
 
 RUBY VERSION
-   ruby 3.4.9p82
+   ruby 3.3.6p108
 
 BUNDLED WITH
    2.7.2
