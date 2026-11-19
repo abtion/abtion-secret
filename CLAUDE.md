@@ -6,7 +6,7 @@ never sees the plaintext or the password.
 
 ## Stack
 
-- Ruby 3.4.9, Rails 8.1
+- Ruby 3.4.13, Rails 8.1
 - Node 24.15, npm 11
 - React 19 (rendered via Shakapacker / webpack)
 - RSpec + Capybara (Ruby), Jest + Testing Library (JS)
