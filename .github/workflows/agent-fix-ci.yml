@@ -12,7 +12,7 @@ permissions:
 
 env:
   AGENT_BOT_NAME: "claude-autofixing-agent"
-  # assets-precompile and coverage_and_sonar are env-dependent or unfixable by
+  # assets-precompile and trigger-sonar are env-dependent or unfixable by
   # code change, so the agent shouldn't burn API credit on them.
   FIXABLE_CI_JOBS: "rubocop|brakeman|eslint|stylelint|erb-lint|jest|prettier|rspec"
   MAX_TURNS: "60"
