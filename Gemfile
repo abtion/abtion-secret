@@ -28,7 +28,7 @@ end
 
 group :development do
   gem "pivotal_git_scripts"
-  gem "rack-mini-profiler", "~> 4.0"
+  gem "rack-mini-profiler", "~> 5.0"
   gem "web-console"
 end
 
