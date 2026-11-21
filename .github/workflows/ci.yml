@@ -14,13 +14,13 @@ jobs:
   # Pushes to main and non-draft PRs run normally.
   guard:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - run: echo "Not a draft PR — running CI."
 
   rubocop:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -32,7 +32,7 @@ jobs:
         run: bin/rubocop --format github
   brakeman:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -44,7 +44,7 @@ jobs:
         run: bin/brakeman
   eslint:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -58,7 +58,7 @@ jobs:
         run: npm run lint
   stylelint:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -72,7 +72,7 @@ jobs:
         run: npx stylelint "app/javascript/**/*.scss"
   erb-lint:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -84,7 +84,7 @@ jobs:
         run: bin/erb_lint --lint-all
   jest:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -104,7 +104,7 @@ jobs:
           path: coverage/js/lcov.info
   prettier:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     steps:
       - name: checkout repository
         uses: actions/checkout@v7
@@ -118,7 +118,7 @@ jobs:
         run: bin/prettier --check
   assets-precompile:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
 
     env:
       RAILS_ENV: production
@@ -150,7 +150,7 @@ jobs:
 
   rspec:
     needs: guard
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
 
     env:
       RAILS_ENV: test
@@ -195,7 +195,7 @@ jobs:
   trigger-sonar:
     needs: [rspec, jest]
     if: always() && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: baremetal-runners
     permissions:
       actions: write
     steps:
