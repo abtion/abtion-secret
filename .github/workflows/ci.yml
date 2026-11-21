@@ -195,7 +195,7 @@ jobs:
   trigger-sonar:
     needs: [rspec, jest]
     if: always() && github.ref == 'refs/heads/main'
-    runs-on: baremetal-runners
+    runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
